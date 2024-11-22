@@ -80,23 +80,23 @@ open Ideal Quotient Function
 #check Pi.ringHom
 #check ker_Pi_Quotient_mk
 
+#check Quotient.lift
 /-- The homomorphism from ``R ⧸ ⨅ i, I i`` to ``Π i, R ⧸ I i`` featured in the Chinese
   Remainder Theorem. -/
 def chineseMap (I : ι → Ideal R) : (R ⧸ ⨅ i, I i) →+* Π i, R ⧸ I i :=
-  sorry
+  Ideal.Quotient.lift (⨅ i, I i) (Pi.ringHom fun i : ι ↦ Ideal.Quotient.mk (I i)) (by simp [← RingHom.mem_ker, ker_Pi_Quotient_mk])
 
 lemma chineseMap_mk (I : ι → Ideal R) (x : R) :
-    chineseMap I (Quotient.mk _ x) = fun i : ι ↦ Ideal.Quotient.mk (I i) x :=
-  sorry
+    chineseMap I (Quotient.mk _ x) = fun i : ι ↦ Ideal.Quotient.mk (I i) x := by rfl
 
 lemma chineseMap_mk' (I : ι → Ideal R) (x : R) (i : ι) :
-    chineseMap I (mk _ x) i = mk (I i) x :=
-  sorry
+    chineseMap I (mk _ x) i = mk (I i) x := by rfl
 
 #check injective_lift_iff
 
 lemma chineseMap_inj (I : ι → Ideal R) : Injective (chineseMap I) := by
-  sorry
+  rw [chineseMap, injective_lift_iff]
+  exact ker_Pi_Quotient_mk I
 
 #check IsCoprime
 #check isCoprime_iff_add

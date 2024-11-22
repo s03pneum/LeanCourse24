@@ -69,8 +69,8 @@ multiplicative structure of a ring or a field
 
 -- #loogle _ * _ < _ * _ ↔ _
 #check mul_lt_mul_left
--- #loogle ?a * _ < ?a * _ ↔ _
-#loogle _ * 0 = 0
+--#loogle ?a * _ < ?a * _ ↔ _
+--#loogle _ * 0 = 0
 
 #check MonoidWithZero
 #check GroupWithZero
@@ -107,7 +107,9 @@ example {R : Type*} [CommRing R] (x : R) :
 /- We can write `Rˣ` for the units of a ring
 (i.e. the elements with a multiplicative inverse). -/
 example (x : ℤˣ) : x = 1 ∨ x = -1 := Int.units_eq_one_or x
-example (x : ℤˣ) : (x : ℤ) = 1 ∨ (x : ℤ) = -1 := by sorry
+example (x : ℤˣ) : (x : ℤ) = 1 ∨ (x : ℤ) = -1 := by
+  refine Int.isUnit_eq_one_or ?hu
+  exact Units.isUnit x
 
 example {R : Type*} [Ring R] : Group Rˣ := by infer_instance
 
@@ -174,9 +176,14 @@ example (n m : ℤ) : span {n} ⊔ span {m} = span {gcd n m} := by
   simp
   rw [@span_pair_comm]
 
-
 /- Exercise: use Loogle to find relevant lemmas. -/
-example (n m : ℤ) : span {n} ⊓ span {m} = span {lcm n m} := by sorry
+example (n m : ℤ) : span {n} ⊓ span {m} = span {lcm n m} := by
+  ext k
+  simp [Ideal.mem_span_singleton]
+  exact Iff.symm lcm_dvd_iff
+
+
+
 
 
 example (n m : ℤ) : span {n} * span {m} = span {n * m} := by
