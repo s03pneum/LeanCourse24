@@ -1,0 +1,16 @@
+overall goal(s):
+------------------------------------------------
+- A representation of a finite abelian group is irreducible iff its degree is 1
+
+definitions:
+------------------------------------------------
+- representation of finite group
+- invariant subspace
+- irreducible representation
+
+lemmas and theorems: (following https://proofwiki.org/wiki/Irreducible_Representations_of_Abelian_Group)
+------------------------------------------------
+- Schur's lemma version 2 for general algebraicly closed field
+- lemma 8.1
+- image and kernel of a homomorphism are invariant subspaces
+- representation of degree one is irreducible
