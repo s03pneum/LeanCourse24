@@ -2,7 +2,7 @@ overall goal(s):
 ------------------------------------------------
 - A representation of a finite abelian group is irreducible iff its degree is 1
 
-definitions:
+definitions: (partly already contained in Mathlib)
 ------------------------------------------------
 - representation of finite group
 - invariant subspace
