@@ -33,7 +33,8 @@ open BigOperators Function Set Real Filter Classical Topology TopologicalSpace
 
 example (x : ℝ) :
     deriv (fun x ↦ Real.exp (x ^ 2)) x = 2 * x * Real.exp (x ^ 2) := by {
-  sorry
+  simp
+  ring
   }
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
@@ -66,13 +67,53 @@ then use `intermediate_value_uIcc`.
 Useful lemmas: `uIcc_of_le` and `mem_uIcc`. -/
 lemma mono_exercise_part1 {f : α → α} (hf : Continuous f) (h2f : Injective f) {a b x : α}
     (hab : a ≤ b) (h2ab : f a < f b) (hx : a ≤ x) : f a ≤ f x := by {
-  sorry
+  by_contra t
+  simp at t
+  have h : ∃ y ∈ uIcc x b, f y = f a := by {
+    have intDir : uIcc (f x) (f b) ⊆ f '' (uIcc x b) := by
+      apply intermediate_value_uIcc
+      exact Continuous.continuousOn hf
+    have funcVal : f a ∈ uIcc (f x) (f b) := by
+      apply mem_uIcc.mpr
+      left
+      constructor
+      repeat
+        gcongr
+    have fvti : f a ∈ f '' (uIcc x b) := by apply intDir; assumption
+    simp at fvti
+    obtain ⟨y, hy⟩ := fvti
+    use y
+  }
+  obtain ⟨y, hy⟩ := h
+  have axb : a ∉ uIcc x b := by
+    refine not_mem_uIcc_of_lt ?ha ?hb
+    . by_contra ct
+      simp at ct
+      have ct' : a = x := by apply le_antisymm; assumption; assumption
+      have ct'' : f x = f a := by rw [ct']
+      rw [ct''] at t
+      exact (lt_self_iff_false (f a)).mp t
+    . by_contra ct
+      simp at ct
+      have ct' : a = b := by apply le_antisymm; assumption; assumption
+      have ct'' : f b = f a := by rw [ct']
+      rw [ct''] at h2ab
+      exact (lt_self_iff_false (f a)).mp h2ab
+  have t' : a ≠ y := by
+    by_contra ct
+    rw [ct] at axb
+    have t'' : y ∈ uIcc x b := by exact hy.1
+    contradiction
+  have t'' : a = y := by symm; exact h2f hy.2
+  contradiction
   }
 
 /- Now use this and the intermediate value theorem again
 to prove that `f` is at least monotone on `[a, ∞)`. -/
 lemma mono_exercise_part2 {f : α → α} (hf : Continuous f) (h2f : Injective f)
     {a b : α} (hab : a ≤ b) (h2ab : f a < f b) : StrictMonoOn f (Ici a) := by {
+  unfold StrictMonoOn
+  intro x hx y hy xy
   sorry
   }
 
@@ -165,7 +206,45 @@ variable (α : Type*) [ConditionallyCompleteLinearOrder α]
   [TopologicalSpace α] [OrderTopology α] [DenselyOrdered α] in
 lemma mono_exercise_part1_copy {f : α → α} (hf : Continuous f) (h2f : Injective f) {a b x : α}
     (hab : a ≤ b) (h2ab : f a < f b) (hx : a ≤ x) : f a ≤ f x := by {
-  sorry
+  by_contra t
+  simp at t
+  have h : ∃ y ∈ uIcc x b, f y = f a := by {
+    have intDir : uIcc (f x) (f b) ⊆ f '' (uIcc x b) := by
+      apply intermediate_value_uIcc
+      exact Continuous.continuousOn hf
+    have funcVal : f a ∈ uIcc (f x) (f b) := by
+      apply mem_uIcc.mpr
+      left
+      constructor
+      repeat
+        gcongr
+    have fvti : f a ∈ f '' (uIcc x b) := by apply intDir; assumption
+    simp at fvti
+    obtain ⟨y, hy⟩ := fvti
+    use y
+  }
+  obtain ⟨y, hy⟩ := h
+  have axb : a ∉ uIcc x b := by
+    refine not_mem_uIcc_of_lt ?ha ?hb
+    . by_contra ct
+      simp at ct
+      have ct' : a = x := by apply le_antisymm; assumption; assumption
+      have ct'' : f x = f a := by rw [ct']
+      rw [ct''] at t
+      exact (lt_self_iff_false (f a)).mp t
+    . by_contra ct
+      simp at ct
+      have ct' : a = b := by apply le_antisymm; assumption; assumption
+      have ct'' : f b = f a := by rw [ct']
+      rw [ct''] at h2ab
+      exact (lt_self_iff_false (f a)).mp h2ab
+  have t' : a ≠ y := by
+    by_contra ct
+    rw [ct] at axb
+    have t'' : y ∈ uIcc x b := by exact hy.1
+    contradiction
+  have t'' : a = y := by symm; exact h2f hy.2
+  contradiction
   }
 
 
