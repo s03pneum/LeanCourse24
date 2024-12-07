@@ -4,9 +4,11 @@ overall goal(s):
 
 definitions: (partly already contained in Mathlib)
 ------------------------------------------------
-- representation of finite group
+- representation of finite group 
 - invariant subspace
 - irreducible representation
+- homomorphisms between representations
+- degree of representations
 
 lemmas and theorems: (following https://proofwiki.org/wiki/Irreducible_Representations_of_Abelian_Group)
 ------------------------------------------------
