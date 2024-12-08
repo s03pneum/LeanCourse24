@@ -18,7 +18,7 @@ def degree {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module
   (ρ : Representation k G V) : Cardinal := (Module.rank k V)
 
 /- Definition of Homomorhpisms between Representations -/
-structure RepresentationHom {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
+class RepresentationHom {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
   (ρ : Representation k G V) (ψ : Representation k G W) extends LinearMap (RingHom.id k) V W where
   reprStructure : ∀ g : G, ∀ v : V, toFun (ρ g v) = ψ g (toFun v)
 
@@ -59,7 +59,18 @@ theorem endomorphism_irreducibleRepr_scalar {k G V : Type*} [Field k] [IsAlgClos
   (ρ : Representation k G V) (θ : RepresentationHom ρ ρ) : ∃ s : k, ∀ v : V, θ v = s • v := by sorry
 
 /- For a representation ρ of an abelian Group G with g ∈ G, ρ(g) is a ReprHom-/
-sorry
+instance {k G V : Type*} [CommSemiring k] [CommMonoid G] [AddCommMonoid V] [Module k V]
+  {ρ : Representation k G V} {g : G} : (RepresentationHom ρ ρ) := ⟨ρ g, by {
+    intro h v
+    simp
+    calc
+      (ρ g) ((ρ h) v) = (ρ (g*h)) (v)   := by sorry
+                    _ = (ρ (h*g)) (v)   := by sorry
+                    _ = (ρ h) ((ρ g) v) := by sorry
+  }⟩
+
+--theorem repr_CommGroup_yieldsReprHom {k G V : Type*} [CommSemiring k] [CommMonoid G] [AddCommMonoid V] [Module k V]
+  --(ρ : Representation k G V) (g : G) : sorry := by sorry
 
 /- Representations of finite abelian groups are irreducible iff their degree is 1 -/
 theorem repr_of_CommGroup_irreducible_iff_degree_one {k G V : Type*} [Field k] [IsAlgClosed k] [CommGroup G] [Finite G] [AddCommGroup V] [Module k V] [Nontrivial V]
