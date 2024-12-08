@@ -10,7 +10,7 @@ abbrev IsInvariantSubspace {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommM
   ∀ g : G, ∀ u : U, ρ g u ∈ U
 
 /- A predicate for a representation being irreducible -/
-abbrev IsIrreducible {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [Nontrivial V]
+abbrev IsIrreducible {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
   (ρ : Representation k G V) :=
   ∀ U : Submodule k V, IsInvariantSubspace U ρ → U = 0 ∨ U = ⊤
 
@@ -21,6 +21,9 @@ def degree {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module
 structure RepresentationHom {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
   (ρ : Representation k G V) (ψ : Representation k G W) extends LinearMap (RingHom.id k) V W where
   reprStructure : ∀ g : G, ∀ v : V, toFun (ρ g v) = ψ g (toFun v)
+
+instance {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W] {ρ : Representation k G V} {ψ : Representation k G W} : CoeFun (RepresentationHom ρ ψ) (fun _ ↦ V → W) where
+  coe := by intro rh; use rh.toFun
 
 /- A Representation of Degree One is Irreducible -/
 theorem repr_degreeOne_irreducible {k G V : Type*} [Field k] [Monoid G] [AddCommGroup V] [Module k V] [Nontrivial V]
@@ -50,6 +53,13 @@ theorem repr_degreeOne_irreducible {k G V : Type*} [Field k] [Monoid G] [AddComm
     norm_cast at hV
     symm
     assumption
+
+/- Every endomorphism of an irreducible representation over an algebraically closed field is given by multiplication with a scalar-/
+theorem endomorphism_irreducibleRepr_scalar {k G V : Type*} [Field k] [IsAlgClosed k] [Monoid G] [AddCommMonoid V] [Module k V]
+  (ρ : Representation k G V) (θ : RepresentationHom ρ ρ) : ∃ s : k, ∀ v : V, θ v = s • v := by sorry
+
+/- For a representation ρ of an abelian Group G with g ∈ G, ρ(g) is a ReprHom-/
+sorry
 
 /- Representations of finite abelian groups are irreducible iff their degree is 1 -/
 theorem repr_of_CommGroup_irreducible_iff_degree_one {k G V : Type*} [Field k] [IsAlgClosed k] [CommGroup G] [Finite G] [AddCommGroup V] [Module k V] [Nontrivial V]

@@ -24,6 +24,6 @@ proof of overall goal:
 
 "=>": Let V be irreducible for representation r. Let g be a group element.
 Then, r(g)*r(h) = r(h)*r(g). Therefore, r(g) is a homomorphism (endomorphism, in this case).
-Since V is irreducible and r != 0, r is an isomorphism.
+Since V is irreducible and r(g) != 0, r(g) is an isomorphism.
 r also is given by multiplication by a scalar, but such an homomorphism has every one-dimensional subspace as invariant subspace.
 Therefore, V is one-dimensional.
