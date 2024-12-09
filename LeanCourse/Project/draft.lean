@@ -59,18 +59,18 @@ theorem endomorphism_irreducibleRepr_scalar {k G V : Type*} [Field k] [IsAlgClos
   (ρ : Representation k G V) (θ : RepresentationHom ρ ρ) : ∃ s : k, ∀ v : V, θ v = s • v := by sorry
 
 /- For a representation ρ of an abelian Group G with g ∈ G, ρ(g) is a ReprHom-/
+/- TODO: Modify this such that proof does not have to be copied-/
 instance {k G V : Type*} [CommSemiring k] [CommMonoid G] [AddCommMonoid V] [Module k V]
   {ρ : Representation k G V} {g : G} : (RepresentationHom ρ ρ) := ⟨ρ g, by {
     intro h v
     simp
     calc
-      (ρ g) ((ρ h) v) = (ρ (g*h)) (v)   := by sorry
-                    _ = (ρ (h*g)) (v)   := by sorry
-                    _ = (ρ h) ((ρ g) v) := by sorry
+      (ρ g) ((ρ h) v) = ((ρ g) * (ρ h)) v := by rfl
+                    _ = (ρ (g*h)) (v)     := by refine LinearMap.congr_fun ?h v; exact Eq.symm (MonoidHom.map_mul ρ g h)
+                    _ = (ρ (h*g)) (v)     := by apply LinearMap.congr_fun; apply congr_arg; exact CommMonoid.mul_comm g h
+                    _ = ((ρ h) * (ρ g)) v := by apply LinearMap.congr_fun; exact MonoidHom.map_mul ρ h g
+                    _ = (ρ h) ((ρ g) v)   := by rfl
   }⟩
-
---theorem repr_CommGroup_yieldsReprHom {k G V : Type*} [CommSemiring k] [CommMonoid G] [AddCommMonoid V] [Module k V]
-  --(ρ : Representation k G V) (g : G) : sorry := by sorry
 
 /- Representations of finite abelian groups are irreducible iff their degree is 1 -/
 theorem repr_of_CommGroup_irreducible_iff_degree_one {k G V : Type*} [Field k] [IsAlgClosed k] [CommGroup G] [Finite G] [AddCommGroup V] [Module k V] [Nontrivial V]
@@ -78,7 +78,26 @@ theorem repr_of_CommGroup_irreducible_iff_degree_one {k G V : Type*} [Field k] [
   constructor
   . intro h
     /-Every subspace of dimension 1 is invariant-/
-    have subspaceDim1Invariant : ∀ U : (Submodule k V), (Module.rank k U) = 1 → IsInvariantSubspace U ρ := by sorry
+    have subspaceDim1Invariant : ∀ U : (Submodule k V), (Module.rank k U) = 1 → IsInvariantSubspace U ρ := by {
+      unfold IsInvariantSubspace
+      intro U dimU g u
+      have hs : ∃ s : k, ∀ v : V, (ρ g) v = s • v := by
+        exact endomorphism_irreducibleRepr_scalar ρ ⟨ρ g, by {
+          intro h v
+          simp
+          calc
+            (ρ g) ((ρ h) v) = ((ρ g) * (ρ h)) v := by rfl
+                          _ = (ρ (g*h)) (v)     := by refine LinearMap.congr_fun ?h v; exact Eq.symm (MonoidHom.map_mul ρ g h)
+                          _ = (ρ (h*g)) (v)     := by apply LinearMap.congr_fun; apply congr_arg; exact CommMonoid.mul_comm g h
+                          _ = ((ρ h) * (ρ g)) v := by apply LinearMap.congr_fun; exact MonoidHom.map_mul ρ h g
+                          _ = (ρ h) ((ρ g) v)   := by rfl
+        }⟩
+      obtain ⟨s, hs⟩ := hs
+      specialize hs u
+      rw [hs]
+      refine Submodule.smul_mem U s ?intro.h
+      exact Submodule.coe_mem u
+    }
     by_contra ct
 
     /-V has a dimension greater than 1-/
