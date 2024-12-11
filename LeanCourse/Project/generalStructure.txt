@@ -1,10 +1,11 @@
 overall goal(s):
 ------------------------------------------------
 - A representation of a finite abelian group is irreducible iff its degree is 1
+- By a representation, we mean a representation with finite dimension. This seems reasonable since FDRep from does constrict itself to finite dimensional representations as well
 
 definitions: (partly already contained in Mathlib)
 ------------------------------------------------
-- representation of finite group 
+- representation of finite group
 - invariant subspace
 - irreducible representation
 - homomorphisms between representations

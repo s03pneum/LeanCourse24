@@ -22,6 +22,14 @@ class RepresentationHom {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMo
   (ρ : Representation k G V) (ψ : Representation k G W) extends LinearMap (RingHom.id k) V W where
   reprStructure : ∀ g : G, ∀ v : V, toFun (ρ g v) = ψ g (toFun v)
 
+
+instance {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W] {ρ : Representation k G V} {ψ : Representation k G W} : CoeFun (RepresentationHom ρ ψ) (fun _ ↦ V →ₗ[k] W) where
+  coe := by
+    intro θ
+    use ⟨θ.toFun, ?_⟩
+    intro x y; simp
+    intro x y; simp
+
 instance {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W] {ρ : Representation k G V} {ψ : Representation k G W} : CoeFun (RepresentationHom ρ ψ) (fun _ ↦ V → W) where
   coe := by intro rh; use rh.toFun
 
@@ -55,8 +63,16 @@ theorem repr_degreeOne_irreducible {k G V : Type*} [Field k] [Monoid G] [AddComm
     assumption
 
 /- Every endomorphism of an irreducible representation over an algebraically closed field is given by multiplication with a scalar-/
-theorem endomorphism_irreducibleRepr_scalar {k G V : Type*} [Field k] [IsAlgClosed k] [Monoid G] [AddCommMonoid V] [Module k V]
-  (ρ : Representation k G V) (θ : RepresentationHom ρ ρ) : ∃ s : k, ∀ v : V, θ v = s • v := by sorry
+theorem endomorphism_irreducibleRepr_scalar {k G V : Type*} [Field k] [IsAlgClosed k] [Monoid G] [AddCommGroup V] [Module k V] [FiniteDimensional k V] [Nontrivial V]
+  (ρ : Representation k G V) (θ : RepresentationHom ρ ρ) : ∃ s : k, ∀ v : V, θ v = s • v := by
+  obtain ⟨s, hs⟩ := Module.End.exists_eigenvalue (θ : V →ₗ[k] V)
+  use s
+  sorry
+
+
+
+
+
 
 /- For a representation ρ of an abelian Group G with g ∈ G, ρ(g) is a ReprHom-/
 /- TODO: Modify this such that proof does not have to be copied-/
@@ -72,8 +88,26 @@ instance {k G V : Type*} [CommSemiring k] [CommMonoid G] [AddCommMonoid V] [Modu
                     _ = (ρ h) ((ρ g) v)   := by rfl
   }⟩
 
+instance repr_yields_reprHom_commMonoid {k G V : Type*} [CommSemiring k] [CommMonoid G] [AddCommMonoid V] [Module k V]
+  (ρ : Representation k G V) (g : G) : (RepresentationHom ρ ρ) where
+  toFun := ρ g
+  map_add' := by intro x y; simp
+  map_smul' := by intro m x; simp
+  reprStructure := by {
+    intro h v
+    simp
+    calc
+      (ρ g) ((ρ h) v) = ((ρ g) * (ρ h)) v := by rfl
+                    _ = (ρ (g*h)) (v)     := by refine LinearMap.congr_fun ?h v; exact Eq.symm (MonoidHom.map_mul ρ g h)
+                    _ = (ρ (h*g)) (v)     := by apply LinearMap.congr_fun; apply congr_arg; exact CommMonoid.mul_comm g h
+                    _ = ((ρ h) * (ρ g)) v := by apply LinearMap.congr_fun; exact MonoidHom.map_mul ρ h g
+                    _ = (ρ h) ((ρ g) v)   := by rfl
+  }
+
+
+
 /- Representations of finite abelian groups are irreducible iff their degree is 1 -/
-theorem repr_of_CommGroup_irreducible_iff_degree_one {k G V : Type*} [Field k] [IsAlgClosed k] [CommGroup G] [Finite G] [AddCommGroup V] [Module k V] [Nontrivial V]
+theorem repr_of_CommGroup_irreducible_iff_degree_one {k G V : Type*} [Field k] [IsAlgClosed k] [CommGroup G] [Finite G] [AddCommGroup V] [Module k V] [Nontrivial V] [FiniteDimensional k V]
   (ρ : Representation k G V) : IsIrreducible ρ ↔ degree ρ = 1 := by
   constructor
   . intro h
@@ -82,7 +116,7 @@ theorem repr_of_CommGroup_irreducible_iff_degree_one {k G V : Type*} [Field k] [
       unfold IsInvariantSubspace
       intro U dimU g u
       have hs : ∃ s : k, ∀ v : V, (ρ g) v = s • v := by
-        exact endomorphism_irreducibleRepr_scalar ρ ⟨ρ g, by {
+        exact endomorphism_irreducibleRepr_scalar ρ (test ρ g) /-⟨ρ g, by {
           intro h v
           simp
           calc
@@ -91,7 +125,7 @@ theorem repr_of_CommGroup_irreducible_iff_degree_one {k G V : Type*} [Field k] [
                           _ = (ρ (h*g)) (v)     := by apply LinearMap.congr_fun; apply congr_arg; exact CommMonoid.mul_comm g h
                           _ = ((ρ h) * (ρ g)) v := by apply LinearMap.congr_fun; exact MonoidHom.map_mul ρ h g
                           _ = (ρ h) ((ρ g) v)   := by rfl
-        }⟩
+        }⟩-/
       obtain ⟨s, hs⟩ := hs
       specialize hs u
       rw [hs]
