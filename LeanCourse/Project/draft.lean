@@ -22,7 +22,7 @@ class RepresentationHom {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMo
   (ρ : Representation k G V) (ψ : Representation k G W) extends LinearMap (RingHom.id k) V W where
   reprStructure : ∀ g : G, ∀ v : V, toFun (ρ g v) = ψ g (toFun v)
 
-
+/- Coercions of RepresentationHom to Function and Linear Map-/
 instance {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W] {ρ : Representation k G V} {ψ : Representation k G W} : CoeFun (RepresentationHom ρ ψ) (fun _ ↦ V →ₗ[k] W) where
   coe := by
     intro θ
@@ -67,27 +67,26 @@ theorem endomorphism_irreducibleRepr_scalar {k G V : Type*} [Field k] [IsAlgClos
   (ρ : Representation k G V) (θ : RepresentationHom ρ ρ) : ∃ s : k, ∀ v : V, θ v = s • v := by
   obtain ⟨s, hs⟩ := Module.End.exists_eigenvalue (θ : V →ₗ[k] V)
   use s
-  sorry
+  /- Define new ReprHom (θ-s1) -/
+  let rh : (RepresentationHom ρ ρ) := ⟨θ.toLinearMap - s • LinearMap.id, by {
+    intro g v
+    simp
+    apply θ.reprStructure}⟩
 
+  /- rh is not Injective -/
+  have nbijrh : ¬ Injective rh := by
+    sorry
 
+  /- rh is 0 -/
+  have rh0 : ∀ v : V, rh v = 0 := by sorry
 
-
-
+  intro v
+  calc
+    θ v = (θ v - s • v) + s • v := by simp
+      _ = rh v + s • v          := by simp [rh]
+      _ = s • v                 := by rw [rh0]; simp
 
 /- For a representation ρ of an abelian Group G with g ∈ G, ρ(g) is a ReprHom-/
-/- TODO: Modify this such that proof does not have to be copied-/
-instance {k G V : Type*} [CommSemiring k] [CommMonoid G] [AddCommMonoid V] [Module k V]
-  {ρ : Representation k G V} {g : G} : (RepresentationHom ρ ρ) := ⟨ρ g, by {
-    intro h v
-    simp
-    calc
-      (ρ g) ((ρ h) v) = ((ρ g) * (ρ h)) v := by rfl
-                    _ = (ρ (g*h)) (v)     := by refine LinearMap.congr_fun ?h v; exact Eq.symm (MonoidHom.map_mul ρ g h)
-                    _ = (ρ (h*g)) (v)     := by apply LinearMap.congr_fun; apply congr_arg; exact CommMonoid.mul_comm g h
-                    _ = ((ρ h) * (ρ g)) v := by apply LinearMap.congr_fun; exact MonoidHom.map_mul ρ h g
-                    _ = (ρ h) ((ρ g) v)   := by rfl
-  }⟩
-
 instance repr_yields_reprHom_commMonoid {k G V : Type*} [CommSemiring k] [CommMonoid G] [AddCommMonoid V] [Module k V]
   (ρ : Representation k G V) (g : G) : (RepresentationHom ρ ρ) where
   toFun := ρ g
@@ -116,16 +115,7 @@ theorem repr_of_CommGroup_irreducible_iff_degree_one {k G V : Type*} [Field k] [
       unfold IsInvariantSubspace
       intro U dimU g u
       have hs : ∃ s : k, ∀ v : V, (ρ g) v = s • v := by
-        exact endomorphism_irreducibleRepr_scalar ρ (test ρ g) /-⟨ρ g, by {
-          intro h v
-          simp
-          calc
-            (ρ g) ((ρ h) v) = ((ρ g) * (ρ h)) v := by rfl
-                          _ = (ρ (g*h)) (v)     := by refine LinearMap.congr_fun ?h v; exact Eq.symm (MonoidHom.map_mul ρ g h)
-                          _ = (ρ (h*g)) (v)     := by apply LinearMap.congr_fun; apply congr_arg; exact CommMonoid.mul_comm g h
-                          _ = ((ρ h) * (ρ g)) v := by apply LinearMap.congr_fun; exact MonoidHom.map_mul ρ h g
-                          _ = (ρ h) ((ρ g) v)   := by rfl
-        }⟩-/
+        exact endomorphism_irreducibleRepr_scalar ρ (repr_yields_reprHom_commMonoid ρ g)
       obtain ⟨s, hs⟩ := hs
       specialize hs u
       rw [hs]
