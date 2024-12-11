@@ -74,8 +74,28 @@ theorem endomorphism_irreducibleRepr_scalar {k G V : Type*} [Field k] [IsAlgClos
     apply θ.reprStructure}⟩
 
   /- rh is not Injective -/
-  have nbijrh : ¬ Injective rh := by
-    sorry
+  have ninjrh : ¬ Injective rh := by
+    unfold Injective
+    simp
+    obtain ⟨v, hv⟩ := Module.End.HasEigenvalue.exists_hasEigenvector hs
+    use v
+    use 0
+    unfold Module.End.HasEigenvector at hv
+    constructor
+    . simp [rh]
+      obtain ⟨hv, _⟩ := hv
+      rw [Module.End.eigenspace_def] at hv
+      simp at hv
+      assumption
+    . exact hv.2
+
+  /- rh is not Bijective -/
+  have nbijrh : ¬ Bijective rh := by
+    unfold Bijective
+    push_neg
+    intro ct
+    exfalso
+    contradiction
 
   /- rh is 0 -/
   have rh0 : ∀ v : V, rh v = 0 := by sorry
