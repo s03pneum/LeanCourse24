@@ -70,6 +70,11 @@ theorem repr_degreeOne_irreducible {k G V : Type*} [Field k] [Monoid G] [AddComm
     symm
     assumption
 
+/- The image of a reprHom is an Invariant Subspace -/
+theorem reprHom_image_isInvariantSubspace {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
+  (ρ : Representation k G V) (ψ : Representation k G W) (θ : (RepresentationHom ρ ψ)) : IsInvariantSubspace ρ V := by
+  sorry
+
 theorem reprHom_betweenIrreducibles_isZeroOrIso {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
   (ρ : Representation k G V) (ψ : Representation k G W) (θ : (RepresentationHom ρ ψ)) :
   θ = zeroReprHom ρ ψ ∨ Bijective θ := by {
