@@ -33,6 +33,14 @@ instance {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module
 instance {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W] {ρ : Representation k G V} {ψ : Representation k G W} : CoeFun (RepresentationHom ρ ψ) (fun _ ↦ V → W) where
   coe := by intro rh; use rh.toFun
 
+/- The zero linear map is a representation hom -/
+instance zeroReprHom {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
+  (ρ : Representation k G V) (ψ : Representation k G W) : (RepresentationHom ρ ψ) where
+  toFun := fun v ↦ 0
+  map_add' := by intro x y; simp
+  map_smul' := by intro m x; simp
+  reprStructure := by intro h v; simp
+
 /- A Representation of Degree One is Irreducible -/
 theorem repr_degreeOne_irreducible {k G V : Type*} [Field k] [Monoid G] [AddCommGroup V] [Module k V] [Nontrivial V]
   (ρ : Representation k G V) : degree ρ = 1 → IsIrreducible ρ := by
@@ -61,6 +69,28 @@ theorem repr_degreeOne_irreducible {k G V : Type*} [Field k] [Monoid G] [AddComm
     norm_cast at hV
     symm
     assumption
+
+theorem reprHom_betweenIrreducibles_isZeroOrIso {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
+  (ρ : Representation k G V) (ψ : Representation k G W) (θ : (RepresentationHom ρ ψ)) :
+  θ = zeroReprHom ρ ψ ∨ Bijective θ := by {
+  sorry
+  }
+
+instance repr_yields_reprHom_commMonoid {k G V : Type*} [CommSemiring k] [CommMonoid G] [AddCommMonoid V] [Module k V]
+  (ρ : Representation k G V) (g : G) : (RepresentationHom ρ ρ) where
+  toFun := ρ g
+  map_add' := by intro x y; simp
+  map_smul' := by intro m x; simp
+  reprStructure := by {
+    intro h v
+    simp
+    calc
+      (ρ g) ((ρ h) v) = ((ρ g) * (ρ h)) v := by rfl
+                    _ = (ρ (g*h)) (v)     := by refine LinearMap.congr_fun ?h v; exact Eq.symm (MonoidHom.map_mul ρ g h)
+                    _ = (ρ (h*g)) (v)     := by apply LinearMap.congr_fun; apply congr_arg; exact CommMonoid.mul_comm g h
+                    _ = ((ρ h) * (ρ g)) v := by apply LinearMap.congr_fun; exact MonoidHom.map_mul ρ h g
+                    _ = (ρ h) ((ρ g) v)   := by rfl
+  }
 
 /- Every endomorphism of an irreducible representation over an algebraically closed field is given by multiplication with a scalar-/
 theorem endomorphism_irreducibleRepr_scalar {k G V : Type*} [Field k] [IsAlgClosed k] [Monoid G] [AddCommGroup V] [Module k V] [FiniteDimensional k V] [Nontrivial V]
@@ -98,32 +128,18 @@ theorem endomorphism_irreducibleRepr_scalar {k G V : Type*} [Field k] [IsAlgClos
     contradiction
 
   /- rh is 0 -/
-  have rh0 : ∀ v : V, rh v = 0 := by sorry
+  have rh0 : rh = zeroReprHom ρ ρ := by
+    obtain hrh := reprHom_betweenIrreducibles_isZeroOrIso ρ ρ rh
+    obtain hrh|hrh := hrh
+    . assumption
+    . exfalso
+      contradiction
 
   intro v
   calc
     θ v = (θ v - s • v) + s • v := by simp
       _ = rh v + s • v          := by simp [rh]
-      _ = s • v                 := by rw [rh0]; simp
-
-/- For a representation ρ of an abelian Group G with g ∈ G, ρ(g) is a ReprHom-/
-instance repr_yields_reprHom_commMonoid {k G V : Type*} [CommSemiring k] [CommMonoid G] [AddCommMonoid V] [Module k V]
-  (ρ : Representation k G V) (g : G) : (RepresentationHom ρ ρ) where
-  toFun := ρ g
-  map_add' := by intro x y; simp
-  map_smul' := by intro m x; simp
-  reprStructure := by {
-    intro h v
-    simp
-    calc
-      (ρ g) ((ρ h) v) = ((ρ g) * (ρ h)) v := by rfl
-                    _ = (ρ (g*h)) (v)     := by refine LinearMap.congr_fun ?h v; exact Eq.symm (MonoidHom.map_mul ρ g h)
-                    _ = (ρ (h*g)) (v)     := by apply LinearMap.congr_fun; apply congr_arg; exact CommMonoid.mul_comm g h
-                    _ = ((ρ h) * (ρ g)) v := by apply LinearMap.congr_fun; exact MonoidHom.map_mul ρ h g
-                    _ = (ρ h) ((ρ g) v)   := by rfl
-  }
-
-
+      _ = s • v                 := by simp; rw [rh0]; rfl
 
 /- Representations of finite abelian groups are irreducible iff their degree is 1 -/
 theorem repr_of_CommGroup_irreducible_iff_degree_one {k G V : Type*} [Field k] [IsAlgClosed k] [CommGroup G] [Finite G] [AddCommGroup V] [Module k V] [Nontrivial V] [FiniteDimensional k V]
