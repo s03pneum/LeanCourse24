@@ -91,7 +91,7 @@ theorem reprHom_kernel_isInvariantSubspace {k G V W : Type*} [CommSemiring k] [M
               _ = 0                     := by exact LinearMap.map_zero (ψ g)
 
 /- ReprHoms between irreducible representations are zero or isomorphisms -/
-theorem reprHom_betweenIrreducibles_isZeroOrIso {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W] [Nontrivial V] [Nontrivial W]
+theorem reprHom_betweenIrreducibles_isZeroOrIso {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommGroup V] [Module k V] [AddCommGroup W] [Module k W] [Nontrivial V] [Nontrivial W]
   (ρ : Representation k G V) (ψ : Representation k G W) (θ : (RepresentationHom ρ ψ)) :
   IsIrreducible ρ → IsIrreducible ψ →  θ = zeroReprHom ρ ψ ∨ Bijective θ := by {
   intro hρ hψ
@@ -105,8 +105,39 @@ theorem reprHom_betweenIrreducibles_isZeroOrIso {k G V W : Type*} [CommSemiring 
     obtain hker|hker := hker
     . unfold Bijective
       constructor
-      . sorry
-      . sorry
+      . apply (injective_iff_map_eq_zero' θ.toLinearMap).mpr
+        intro v
+        constructor
+        . intro hv
+          have hv : v ∈ (LinearMap.ker θ.toLinearMap) := by exact hv
+          rw [hker] at hv
+          exact hv
+        . intro hv
+          rw [hv]
+          simp
+      . obtain hran|hran := hran
+        . exfalso
+          have hker' : (LinearMap.ker θ.toLinearMap) = ⊤ := by
+            apply Submodule.eq_top_iff'.mpr
+            intro v
+            apply LinearMap.mem_ker.mpr
+            have hv : θ.toLinearMap v ∈ (⊥ : Submodule k W) := by
+              rw [← hran]
+              exact LinearMap.mem_range_self (RepresentationHom.toLinearMap ρ ψ) v
+            exact hv
+          rw [hker'] at hker
+          have ct : ¬ Nontrivial V := by
+            by_contra t
+            have t' : ¬ (⊤ : (Submodule k V)) = (⊥ : (Submodule k V)) := by
+              exact Ne.symm bot_ne_top
+            contradiction
+          contradiction
+        . unfold Surjective
+          intro w
+          have hw : w ∈ (LinearMap.range θ.toLinearMap) := by
+            rw [hran]
+            exact _root_.trivial
+          exact hw
     . exfalso
       have h' : θ = zeroReprHom ρ ψ := by {
         ext v
