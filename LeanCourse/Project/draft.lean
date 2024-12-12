@@ -20,7 +20,7 @@ def degree {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module
 /- Definition of Homomorhpisms between Representations -/
 class RepresentationHom {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
   (ρ : Representation k G V) (ψ : Representation k G W) extends LinearMap (RingHom.id k) V W where
-  reprStructure : ∀ g : G, ∀ v : V, toFun (ρ g v) = ψ g (toFun v)
+  reprStructure : ∀ g : G, ∀ v : V, toLinearMap (ρ g v) = ψ g (toLinearMap v)
 
 /- Coercions of RepresentationHom to Function and Linear Map-/
 instance {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W] {ρ : Representation k G V} {ψ : Representation k G W} : CoeFun (RepresentationHom ρ ψ) (fun _ ↦ V →ₗ[k] W) where
@@ -72,8 +72,23 @@ theorem repr_degreeOne_irreducible {k G V : Type*} [Field k] [Monoid G] [AddComm
 
 /- The image of a reprHom is an Invariant Subspace -/
 theorem reprHom_image_isInvariantSubspace {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
-  (ρ : Representation k G V) (ψ : Representation k G W) (θ : (RepresentationHom ρ ψ)) : IsInvariantSubspace ρ V := by
-  sorry
+  (ρ : Representation k G V) (ψ : Representation k G W) (θ : (RepresentationHom ρ ψ)) :
+  IsInvariantSubspace (LinearMap.range θ.toLinearMap) ψ := by
+  simp [IsInvariantSubspace]
+  intro g v
+  use (ρ g) v
+  exact θ.reprStructure g v
+
+/- The kernel of a reprHom is an Invariant Subspace -/
+theorem reprHom_kernel_isInvariantSubspace {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
+  (ρ : Representation k G V) (ψ : Representation k G W) (θ : (RepresentationHom ρ ψ)) :
+  IsInvariantSubspace (LinearMap.ker θ.toLinearMap) ρ := by
+  simp [IsInvariantSubspace]
+  intro g v vinker
+  calc
+    θ ((ρ g) v) = ψ g (θ.toLinearMap v) := by exact θ.reprStructure g v
+              _ = ψ g 0                 := by rw [vinker]
+              _ = 0                     := by exact LinearMap.map_zero (ψ g)
 
 theorem reprHom_betweenIrreducibles_isZeroOrIso {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
   (ρ : Representation k G V) (ψ : Representation k G W) (θ : (RepresentationHom ρ ψ)) :
