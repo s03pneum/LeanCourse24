@@ -10,7 +10,7 @@ abbrev IsInvariantSubspace {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommM
   ∀ g : G, ∀ u : U, ρ g u ∈ U
 
 /- A predicate for a representation being irreducible -/
-abbrev IsIrreducible {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
+abbrev IsIrreducible {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [Nontrivial V]
   (ρ : Representation k G V) :=
   ∀ U : Submodule k V, IsInvariantSubspace U ρ → U = 0 ∨ U = ⊤
 
@@ -18,7 +18,7 @@ def degree {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module
   (ρ : Representation k G V) : Cardinal := (Module.rank k V)
 
 /- Definition of Homomorhpisms between Representations -/
-class RepresentationHom {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
+@[ext] class RepresentationHom {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
   (ρ : Representation k G V) (ψ : Representation k G W) extends LinearMap (RingHom.id k) V W where
   reprStructure : ∀ g : G, ∀ v : V, toLinearMap (ρ g v) = ψ g (toLinearMap v)
 
@@ -90,10 +90,33 @@ theorem reprHom_kernel_isInvariantSubspace {k G V W : Type*} [CommSemiring k] [M
               _ = ψ g 0                 := by rw [vinker]
               _ = 0                     := by exact LinearMap.map_zero (ψ g)
 
-theorem reprHom_betweenIrreducibles_isZeroOrIso {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
+/- ReprHoms between irreducible representations are zero or isomorphisms -/
+theorem reprHom_betweenIrreducibles_isZeroOrIso {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W] [Nontrivial V] [Nontrivial W]
   (ρ : Representation k G V) (ψ : Representation k G W) (θ : (RepresentationHom ρ ψ)) :
-  θ = zeroReprHom ρ ψ ∨ Bijective θ := by {
-  sorry
+  IsIrreducible ρ → IsIrreducible ψ →  θ = zeroReprHom ρ ψ ∨ Bijective θ := by {
+  intro hρ hψ
+  have hker : (LinearMap.ker θ.toLinearMap) = ⊥ ∨ (LinearMap.ker θ.toLinearMap) = ⊤ := by exact hρ (LinearMap.ker θ.toLinearMap) (reprHom_kernel_isInvariantSubspace ρ ψ θ)
+  have hran : (LinearMap.range θ.toLinearMap) = ⊥ ∨ (LinearMap.range θ.toLinearMap) = ⊤ := by exact hψ (LinearMap.range θ.toLinearMap) (reprHom_image_isInvariantSubspace ρ ψ θ)
+
+  by_cases h : θ = zeroReprHom ρ ψ
+  . left
+    assumption
+  . right
+    obtain hker|hker := hker
+    . unfold Bijective
+      constructor
+      . sorry
+      . sorry
+    . exfalso
+      have h' : θ = zeroReprHom ρ ψ := by {
+        ext v
+        calc θ.toLinearMap v = 0 := by{
+          refine LinearMap.mem_ker.mp ?_
+          rw [hker]
+          exact _root_.trivial
+        }
+      }
+      contradiction
   }
 
 instance repr_yields_reprHom_commMonoid {k G V : Type*} [CommSemiring k] [CommMonoid G] [AddCommMonoid V] [Module k V]
@@ -114,7 +137,8 @@ instance repr_yields_reprHom_commMonoid {k G V : Type*} [CommSemiring k] [CommMo
 
 /- Every endomorphism of an irreducible representation over an algebraically closed field is given by multiplication with a scalar-/
 theorem endomorphism_irreducibleRepr_scalar {k G V : Type*} [Field k] [IsAlgClosed k] [Monoid G] [AddCommGroup V] [Module k V] [FiniteDimensional k V] [Nontrivial V]
-  (ρ : Representation k G V) (θ : RepresentationHom ρ ρ) : ∃ s : k, ∀ v : V, θ v = s • v := by
+  (ρ : Representation k G V) (θ : RepresentationHom ρ ρ) : IsIrreducible ρ → ∃ s : k, ∀ v : V, θ v = s • v := by
+  intro hρ
   obtain ⟨s, hs⟩ := Module.End.exists_eigenvalue (θ : V →ₗ[k] V)
   use s
   /- Define new ReprHom (θ-s1) -/
@@ -150,7 +174,7 @@ theorem endomorphism_irreducibleRepr_scalar {k G V : Type*} [Field k] [IsAlgClos
   /- rh is 0 -/
   have rh0 : rh = zeroReprHom ρ ρ := by
     obtain hrh := reprHom_betweenIrreducibles_isZeroOrIso ρ ρ rh
-    obtain hrh|hrh := hrh
+    obtain hrh|hrh := hrh hρ hρ
     . assumption
     . exfalso
       contradiction
@@ -171,7 +195,7 @@ theorem repr_of_CommGroup_irreducible_iff_degree_one {k G V : Type*} [Field k] [
       unfold IsInvariantSubspace
       intro U dimU g u
       have hs : ∃ s : k, ∀ v : V, (ρ g) v = s • v := by
-        exact endomorphism_irreducibleRepr_scalar ρ (repr_yields_reprHom_commMonoid ρ g)
+        exact endomorphism_irreducibleRepr_scalar ρ (repr_yields_reprHom_commMonoid ρ g) h
       obtain ⟨s, hs⟩ := hs
       specialize hs u
       rw [hs]
