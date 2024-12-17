@@ -4,7 +4,7 @@ noncomputable section
 
 namespace Representation
 
-/- A predicate for a subspace being irreducible -/
+/- A predicate for a subspace being invariant -/
 abbrev IsInvariantSubspace {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
   (U : Submodule k V) (ρ : Representation k G V) :=
   ∀ g : G, ∀ u : U, ρ g u ∈ U
@@ -27,8 +27,7 @@ instance {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module
   coe := by
     intro θ
     use ⟨θ.toFun, ?_⟩
-    intro x y; simp
-    intro x y; simp
+    simp; intro x y; simp
 
 instance {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W] {ρ : Representation k G V} {ψ : Representation k G W} : CoeFun (RepresentationHom ρ ψ) (fun _ ↦ V → W) where
   coe := by intro rh; use rh.toFun
