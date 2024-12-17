@@ -4,25 +4,26 @@ noncomputable section
 
 namespace Representation
 
-/- A predicate for a subspace being invariant -/
+/-- A predicate for a subspace being invariant -/
 abbrev IsInvariantSubspace {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
   (U : Submodule k V) (ρ : Representation k G V) :=
   ∀ g : G, ∀ u : U, ρ g u ∈ U
 
-/- A predicate for a representation being irreducible -/
+/-- A predicate for a representation being irreducible -/
 abbrev IsIrreducible {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [Nontrivial V]
   (ρ : Representation k G V) :=
   ∀ U : Submodule k V, IsInvariantSubspace U ρ → U = 0 ∨ U = ⊤
 
+/-- defines degree of a representation as rank of its module -/
 def degree {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
   (ρ : Representation k G V) : Cardinal := (Module.rank k V)
 
-/- Definition of Homomorhpisms between Representations -/
+/-- Definition of Homomorhpisms between Representations -/
 @[ext] class RepresentationHom {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
   (ρ : Representation k G V) (ψ : Representation k G W) extends LinearMap (RingHom.id k) V W where
   reprStructure : ∀ g : G, ∀ v : V, toLinearMap (ρ g v) = ψ g (toLinearMap v)
 
-/- Coercions of RepresentationHom to Function and Linear Map-/
+/-- Coercions of RepresentationHom to Function and Linear Map-/
 instance {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W] {ρ : Representation k G V} {ψ : Representation k G W} : CoeFun (RepresentationHom ρ ψ) (fun _ ↦ V →ₗ[k] W) where
   coe := by
     intro θ
@@ -216,7 +217,7 @@ theorem endomorphism_irreducibleRepr_scalar {k G V : Type*} [Field k] [IsAlgClos
       _ = s • v                 := by simp; rw [rh0]; rfl
 
 /- Representations of finite abelian groups are irreducible iff their degree is 1 -/
-theorem repr_of_CommGroup_irreducible_iff_degree_one {k G V : Type*} [Field k] [IsAlgClosed k] [CommGroup G] [Finite G] [AddCommGroup V] [Module k V] [Nontrivial V] [FiniteDimensional k V]
+theorem repr_of_CommGroup_irreducible_iff_degree_one {k G V : Type*} [Field k] [IsAlgClosed k] [CommGroup G] [AddCommGroup V] [Module k V] [Nontrivial V] [FiniteDimensional k V]
   (ρ : Representation k G V) : IsIrreducible ρ ↔ degree ρ = 1 := by
   constructor
   . intro h

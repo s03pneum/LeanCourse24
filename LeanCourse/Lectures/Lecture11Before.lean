@@ -109,8 +109,8 @@ common errors in your file.
 (It will also point out that every definition
 should have a documentation string, but you can ignore this). -/
 
-@[simp]
-lemma mul_sub_self_eq_zero (n m : ℕ) :
+
+@[simp] lemma mul_sub_self_eq_zero (n m : ℕ) :
     n * (m - m) = 0 := by simp
 
 #lint
