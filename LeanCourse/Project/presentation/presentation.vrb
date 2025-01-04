@@ -1,11 +1,12 @@
-\frametitle{Definitions}
+\frametitle{Registering Instances}
+\begin{lemma}
+For all \(g \in G\), \(\rho(g)\) is a Representation Endomorphism.
+\end{lemma}
 \begin{lstlisting}
-/-- A predicate for a subspace being invariant -/
-def IsInvariantSubspace {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
-  (U : Submodule k V) (ρ : Representation k G V) :=
-  ∀ g : G, ∀ u : U, ρ g u ∈ U
-
-/-- defines degree of a representation as rank of its module -/
-def degree {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
-  (ρ : Representation k G V) : Cardinal := (Module.rank k V)
+instance repr_yields_reprHom_commMonoid {k G V : Type*} [CommSemiring k] [CommMonoid G] [AddCommMonoid V] [Module k V]
+  (ρ : Representation k G V) (g : G) : (RepresentationHom ρ ρ) where
+  toFun := ρ g
+  map_add' := by intro x y; simp
+  map_smul' := by intro m x; simp
+  reprStructure := sorry
 \end{lstlisting}

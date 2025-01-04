@@ -158,6 +158,7 @@ Every Representation Endomorphism is given by multiplication with a scalar.
 \begin{itemize}
 \item in the first lemma, we use the fact that \(G\) is abelian
 \item the second lemma is a corollary of Schur's lemma
+\item There are versions of Schur's lemma in Mathlib, but we proved it from scratch
 \end{itemize}
 }
 
@@ -211,7 +212,52 @@ def degree {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module
 
 \note{
 \begin{itemize}
-\item Left out 
+\item Left out irreducibilty for space
+\item Commentary about class inference
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+\frametitle{Representation Homomorphisms}
+\begin{lstlisting}
+/-- Definition of Homomorhpisms between Representations -/
+@[ext] class RepresentationHom {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
+  (ρ : Representation k G V) (ψ : Representation k G W) extends LinearMap (RingHom.id k) V W where
+  reprStructure : ∀ g : G, ∀ v : V, toLinearMap (ρ g v) = ψ g (toLinearMap v)
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Coercions}
+\begin{lstlisting}
+/-- Coercions of RepresentationHom to Function and Linear Map-/
+instance {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W] {ρ : Representation k G V} {ψ : Representation k G W} : CoeFun (RepresentationHom ρ ψ) (fun _ ↦ V →ₗ[k] W) where
+  coe := by
+    intro θ
+    use ⟨θ.toFun, ?_⟩
+    simp; intro x y; simp
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Registering Instances}
+\begin{lemma}
+For all \(g \in G\), \(\rho(g)\) is a Representation Endomorphism.
+\end{lemma}
+\begin{lstlisting}
+instance repr_yields_reprHom_commMonoid {k G V : Type*} [CommSemiring k] [CommMonoid G] [AddCommMonoid V] [Module k V]
+  (ρ : Representation k G V) (g : G) : (RepresentationHom ρ ρ) where
+  toFun := ρ g
+  map_add' := by intro x y; simp
+  map_smul' := by intro m x; simp
+  reprStructure := sorry
+\end{lstlisting}
+\end{frame}
+
+\note{
+\begin{itemize}
+\item Code in place of sorry is left out for space
+\item The rest of the code is using these definitions => probably not that interesting
 \end{itemize}
 }
 
