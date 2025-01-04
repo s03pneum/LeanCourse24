@@ -4,6 +4,8 @@ noncomputable section
 
 namespace Representation
 
+#check Representation
+
 /-- A predicate for a subspace being invariant -/
 def IsInvariantSubspace {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
   (U : Submodule k V) (ρ : Representation k G V) :=
