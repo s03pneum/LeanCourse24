@@ -1,4 +1,0 @@
-https://simonrs.com/eulercircle/gola/atticus-repn.pdf
-Representations and characters of groups, Jan Schröer
-https://proofwiki.org/wiki/Irreducible_Representations_of_Abelian_Group
-https://leanprover-community.github.io/mathlib4_docs/Mathlib/RepresentationTheory/Basic.html#Representation
