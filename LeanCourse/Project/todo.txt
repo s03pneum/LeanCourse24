@@ -1,7 +1,3 @@
-- refactor draft.lean (new name, multiple files, shorter proofs, ...)
-
-- refactor generalStructure.txt (change to "documentation", merge sources, new name, make it specific for first goal)
-
 - connect two kinds of representations in Mathlib (as a homomorphism, as a module)
 -> "coercion" from homomorphism to module (already given in Mathlib)
 -> "coercion" from module to homomorphism (probably not given in Mathlib, research)
