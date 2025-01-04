@@ -1,0 +1,63 @@
+\documentclass{beamer}
+\usetheme{Berlin}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{blindtext}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{tabto}
+
+\title{Representation theory of finite groups}
+\subtitle{Formalization project}
+\author{Raphael Gaedtke, Paul Neumann}
+\institute{University of Bonn}
+\date{January 10, 2025}
+
+\newcommand{\GL}{\text{GL}}
+
+\begin{document}
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\tableofcontents
+\end{frame}
+
+\section{Representation Theory}
+\begin{frame}
+\frametitle{Definition Representation}
+\begin{definition}
+For a group \(G\) and a field \(k\), a \textbf{representation} of \(G\) over \(k\) is a pair \((V, \rho)\) where \(V\) is a vector space over \(k\) and \(\rho: G\to \GL (V)\) is an action of \(G\) on \(V\).
+\end{definition}
+\pause
+Convention: \(V\) has finite dimension, unless explicitly stated otherwise.
+\begin{definition}
+\(\dim (V)\) is the \textbf{dimension} or \textbf{degree} of \((V, \rho)\).
+\end{definition}
+\end{frame}
+
+\note{
+- intuition of a symmetry group
+- this definition is somewhat restricted: Monoid instead of group, module instead of vector space is possible
+- Representation theory is not restricted to groups
+}
+
+\section{Finite abelian groups}
+\begin{frame}
+\end{frame}
+
+\section{Formalization}
+\begin{frame}
+\end{frame}
+
+\section{Mathlib}
+\begin{frame}
+\end{frame}
+
+\section{Future work}
+\begin{frame}
+\end{frame}
+
+\end{document}
