@@ -1,4 +1,5 @@
 \documentclass{beamer}
+%\documentclass[notes]{beamer} %Use this instead of the first line for displaying the notes
 \usetheme{Berlin}
 \usepackage{amsmath}
 \usepackage{amsthm}
@@ -14,6 +15,8 @@
 \date{January 10, 2025}
 
 \newcommand{\GL}{\text{GL}}
+\newcommand{\inv}{^{-1}}
+\newcommand{\R}{\mathbb{R}}
 
 \begin{document}
 \begin{frame}
@@ -27,7 +30,7 @@
 
 \section{Representation Theory}
 \begin{frame}
-\frametitle{Definition Representation}
+\frametitle{Representations of finite groups}
 \begin{definition}
 For a group \(G\) and a field \(k\), a \textbf{representation} of \(G\) over \(k\) is a pair \((V, \rho)\) where \(V\) is a vector space over \(k\) and \(\rho: G\to \GL (V)\) is an action of \(G\) on \(V\).
 \end{definition}
@@ -39,14 +42,62 @@ Convention: \(V\) has finite dimension, unless explicitly stated otherwise.
 \end{frame}
 
 \note{
-- intuition of a symmetry group
-- this definition is somewhat restricted: Monoid instead of group, module instead of vector space is possible
-- Representation theory is not restricted to groups
+\begin{itemize}
+\item intuition of a symmetry group
+\item this definition is somewhat restricted: Monoid instead of group, module instead of vector space is possible
+\item Representation theory is not restricted to groups, this is a special case
+\end{itemize}
 }
+
+\begin{frame}
+\begin{example}
+\begin{equation*}
+D_{2n} = \langle a, b \vert a^n = b^2 = 1, bab = a\inv \rangle
+\end{equation*}
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width = 5cm]{octagon.png}
+\end{center}
+\end{figure}
+\pause
+Representation \(\rho: D_{2n} \to \GL (\R^3)\) with 
+\begin{itemize}
+\item \(\rho(a)\) as rotation about the \(Z\)-axis
+\item \(\rho(b)\) as a rotation about a suitable axis in the \(XY\)-plane
+\end{itemize}
+\end{example}
+\end{frame}
+
+\begin{frame}
+\frametitle{Invariant subspaces, Irreducibility}
+\begin{definition}
+Let \(V\) be a representation and \(U \subseteq V\) a subspace. \(U\) is an \textbf{invariant subspace} if \(gu \in U\) for \(\forall u\in U, g \in G\).
+\end{definition}
+\pause
+\begin{example}
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width = 1.4cm]{octagon.png}
+\end{center}
+\end{figure}
+\pause
+The \(XY\)-Plane is an invariant subspace.
+\end{example}
+\pause
+\begin{definition}
+A representation \(V\) is \textbf{irreducible} provided \(V \neq 0\) and the only invariant subspaces are 0 and \(V\).
+\end{definition}
+\end{frame}
 
 \section{Finite abelian groups}
 \begin{frame}
 \end{frame}
+
+\note{
+\begin{itemize}
+\item This is from the \enquote{undergraduate topics not yet in Mathlib page}
+\end{itemize}
+}
 
 \section{Formalization}
 \begin{frame}
