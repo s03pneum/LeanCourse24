@@ -5,12 +5,12 @@ noncomputable section
 namespace Representation
 
 /-- A predicate for a subspace being invariant -/
-abbrev IsInvariantSubspace {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
+def IsInvariantSubspace {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
   (U : Submodule k V) (ρ : Representation k G V) :=
   ∀ g : G, ∀ u : U, ρ g u ∈ U
 
 /-- A predicate for a representation being irreducible -/
-abbrev IsIrreducible {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [Nontrivial V]
+def IsIrreducible {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [Nontrivial V]
   (ρ : Representation k G V) :=
   ∀ U : Submodule k V, IsInvariantSubspace U ρ → U = 0 ∨ U = ⊤
 
@@ -150,6 +150,7 @@ theorem reprHom_betweenIrreducibles_isZeroOrIso {k G V W : Type*} [CommSemiring 
       contradiction
   }
 
+/-Let G be an commutative monoid and ρ a representation of G. Then ρ(g) is a RepresentationHomomorphism.-/
 instance repr_yields_reprHom_commMonoid {k G V : Type*} [CommSemiring k] [CommMonoid G] [AddCommMonoid V] [Module k V]
   (ρ : Representation k G V) (g : G) : (RepresentationHom ρ ρ) where
   toFun := ρ g
@@ -233,9 +234,11 @@ theorem repr_of_CommGroup_irreducible_iff_degree_one {k G V : Type*} [Field k] [
       refine Submodule.smul_mem U s ?intro.h
       exact Submodule.coe_mem u
     }
+
+    /-Assume that V does not have dimension 1-/
     by_contra ct
 
-    /-V has a dimension greater than 1-/
+    /-V has dimension greater than 1-/
     have dimV : Module.rank k V > 1 := by
       by_contra dle1
       simp at dle1
