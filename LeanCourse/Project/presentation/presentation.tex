@@ -1,13 +1,30 @@
 \documentclass{beamer}
 %\documentclass[notes]{beamer} %Use this instead of the first line for displaying the notes
 \usetheme{Berlin}
+ \usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{blindtext}
 \usepackage{amsfonts}
 \usepackage{graphicx}
 \usepackage{tabto}
 \usepackage{csquotes}
+
+% Für Quelltext
+\usepackage{listings}
+\usepackage{color}
+\definecolor{keywordcolor}{rgb}{0.7, 0.1, 0.1}   % red
+\definecolor{tacticcolor}{rgb}{0.0, 0.1, 0.6}    % blue
+\definecolor{commentcolor}{rgb}{0.4, 0.4, 0.4}   % grey
+\definecolor{symbolcolor}{rgb}{0.0, 0.1, 0.6}    % blue
+\definecolor{sortcolor}{rgb}{0.1, 0.5, 0.1}      % green
+\definecolor{attributecolor}{rgb}{0.7, 0.1, 0.1} % red
+
+\def\lstlanguagefiles{lstlean.tex}
+% set default language
+\lstset{language=lean}
 
 \title{Representation theory of finite groups}
 \subtitle{Formalization project}
@@ -20,6 +37,9 @@
 \newcommand{\Ker}{\text{Ker}}
 \newcommand{\inv}{^{-1}}
 \newcommand{\R}{\mathbb{R}}
+
+\DeclareUnicodeCharacter{2097}{\(_\text{l}\)}
+\DeclareUnicodeCharacter{22A4}{\(\top\)}
 
 \begin{document}
 \begin{frame}
@@ -162,8 +182,38 @@ Now, we can use proof by contradiction:
 \end{frame}
 
 \section{Formalization}
-\begin{frame}
+\begin{frame}[fragile]
+\frametitle{Representations in Mathlib}
+Representations are already defined in Mathlib:
+\begin{lstlisting}
+abbrev Representation :=
+  G →* V →ₗ[k] V
+
+end
+\end{lstlisting}
+\pause
+Apart from that, the definitions introduced in the beginning of this presentation are missing in Mathlib.
 \end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Definitions}
+\begin{lstlisting}
+/-- A predicate for a subspace being invariant -/
+def IsInvariantSubspace {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
+  (U : Submodule k V) (ρ : Representation k G V) :=
+  ∀ g : G, ∀ u : U, ρ g u ∈ U
+
+/-- defines degree of a representation as rank of its module -/
+def degree {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
+  (ρ : Representation k G V) : Cardinal := (Module.rank k V)
+\end{lstlisting}
+\end{frame}
+
+\note{
+\begin{itemize}
+\item Left out 
+\end{itemize}
+}
 
 \section{Mathlib}
 \begin{frame}

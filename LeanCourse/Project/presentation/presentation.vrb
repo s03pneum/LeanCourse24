@@ -1,0 +1,11 @@
+\frametitle{Definitions}
+\begin{lstlisting}
+/-- A predicate for a subspace being invariant -/
+def IsInvariantSubspace {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
+  (U : Submodule k V) (ρ : Representation k G V) :=
+  ∀ g : G, ∀ u : U, ρ g u ∈ U
+
+/-- defines degree of a representation as rank of its module -/
+def degree {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
+  (ρ : Representation k G V) : Cardinal := (Module.rank k V)
+\end{lstlisting}
