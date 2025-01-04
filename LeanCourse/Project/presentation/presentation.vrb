@@ -1,12 +1,7 @@
-\frametitle{Registering Instances}
-\begin{lemma}
-For all \(g \in G\), \(\rho(g)\) is a Representation Endomorphism.
-\end{lemma}
-\begin{lstlisting}
-instance repr_yields_reprHom_commMonoid {k G V : Type*} [CommSemiring k] [CommMonoid G] [AddCommMonoid V] [Module k V]
-  (ρ : Representation k G V) (g : G) : (RepresentationHom ρ ρ) where
-  toFun := ρ g
-  map_add' := by intro x y; simp
-  map_smul' := by intro m x; simp
-  reprStructure := sorry
-\end{lstlisting}
+\frametitle{The translation in Mathlib}
+The theorem \verb+asAlgebraHomdef+ and the definition \verb+Representation.asModule+ translate a \verb+Representation+ to the corresponding algebra, \verb+Representation.ofModule+ is for the other direction.\\
+\pause
+\vspace{1cm}
+Things like the theorem of Maschke are not formulated for \verb+Representation+s, but for algebras.\\
+\pause
+Irreducibility of representations translates to irreducibility of modules.

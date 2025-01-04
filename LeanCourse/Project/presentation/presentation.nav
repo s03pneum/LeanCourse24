@@ -38,15 +38,21 @@
 \headcommand {\beamer@sectionpages {23}{28}}
 \headcommand {\beamer@subsectionpages {23}{28}}
 \headcommand {\sectionentry {4}{Mathlib}{29}{Mathlib}{0}}
-\headcommand {\slideentry {4}{0}{1}{29/29}{}{0}}
-\headcommand {\beamer@framepages {29}{29}}
-\headcommand {\beamer@sectionpages {29}{29}}
-\headcommand {\beamer@subsectionpages {29}{29}}
-\headcommand {\sectionentry {5}{Future work}{30}{Future work}{0}}
-\headcommand {\slideentry {5}{0}{1}{30/30}{}{0}}
-\headcommand {\beamer@framepages {30}{30}}
-\headcommand {\beamer@partpages {1}{30}}
-\headcommand {\beamer@subsectionpages {30}{30}}
-\headcommand {\beamer@sectionpages {30}{30}}
-\headcommand {\beamer@documentpages {30}}
-\headcommand {\gdef \inserttotalframenumber {16}}
+\headcommand {\slideentry {4}{0}{1}{29/30}{}{0}}
+\headcommand {\beamer@framepages {29}{30}}
+\headcommand {\slideentry {4}{0}{2}{31/33}{}{0}}
+\headcommand {\beamer@framepages {31}{33}}
+\headcommand {\slideentry {4}{0}{3}{34/36}{}{0}}
+\headcommand {\beamer@framepages {34}{36}}
+\headcommand {\beamer@sectionpages {29}{36}}
+\headcommand {\beamer@subsectionpages {29}{36}}
+\headcommand {\sectionentry {5}{Future work}{37}{Future work}{0}}
+\headcommand {\slideentry {5}{0}{1}{37/40}{}{0}}
+\headcommand {\beamer@framepages {37}{40}}
+\headcommand {\slideentry {5}{0}{2}{41/41}{}{0}}
+\headcommand {\beamer@framepages {41}{41}}
+\headcommand {\beamer@partpages {1}{41}}
+\headcommand {\beamer@subsectionpages {37}{41}}
+\headcommand {\beamer@sectionpages {37}{41}}
+\headcommand {\beamer@documentpages {41}}
+\headcommand {\gdef \inserttotalframenumber {19}}
