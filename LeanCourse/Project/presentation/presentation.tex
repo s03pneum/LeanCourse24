@@ -7,6 +7,7 @@
 \usepackage{amsfonts}
 \usepackage{graphicx}
 \usepackage{tabto}
+\usepackage{csquotes}
 
 \title{Representation theory of finite groups}
 \subtitle{Formalization project}
@@ -15,6 +16,8 @@
 \date{January 10, 2025}
 
 \newcommand{\GL}{\text{GL}}
+\newcommand{\Img}{\text{Im}}
+\newcommand{\Ker}{\text{Ker}}
 \newcommand{\inv}{^{-1}}
 \newcommand{\R}{\mathbb{R}}
 
@@ -56,7 +59,7 @@ D_{2n} = \langle a, b \vert a^n = b^2 = 1, bab = a\inv \rangle
 \end{equation*}
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width = 5cm]{octagon.png}
+\includegraphics[width = 5cm]{images/octagon.png}
 \end{center}
 \end{figure}
 \pause
@@ -77,27 +80,86 @@ Let \(V\) be a representation and \(U \subseteq V\) a subspace. \(U\) is an \tex
 \begin{example}
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width = 1.4cm]{octagon.png}
+\includegraphics[width = 3cm]{images/octagon.png}
 \end{center}
 \end{figure}
 \pause
 The \(XY\)-Plane is an invariant subspace.
 \end{example}
-\pause
+\end{frame}
+
+\begin{frame}
+\frametitle{Irreducibility, Representation Homomorphisms}
 \begin{definition}
 A representation \(V\) is \textbf{irreducible} provided \(V \neq 0\) and the only invariant subspaces are 0 and \(V\).
 \end{definition}
+\pause
+\begin{definition}
+For representations \(V\) and \(W\), a \textbf{homomorphism} is a linear map \(\theta: V\to W\) with \(\theta(gv) = g\theta(v)\) for \(\forall g\in G, v\in V\).
+\end{definition}
+\pause
+\begin{itemize}
+\item \(\Img (\theta)\) and \(\Ker (\theta)\) are invariant subspaces
+\item If \(V\) and \(W\) are irreducible, then \(\theta: V \to W\) is 0 or bijective.
+\end{itemize}
 \end{frame}
 
 \section{Finite abelian groups}
 \begin{frame}
+\frametitle{Main theorem formalized in this project}
+This theorem is listed on the \enquote{Missing undergraduate mathematics in mathlib}-page.
+\pause
+\begin{theorem}
+Let \(G\) be a finite abelian group.\\
+Let \(V\) be a non-null vector space over an algebraically closed field \(k\).\\
+Let \(\rho: G \to \GL (V)\) be a representation.\\
+\pause
+\vspace{1cm}
+Then \(\rho\) is irreducible if and only if \(\dim_k(V) = 1\).
+\end{theorem}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of the theorem}
+\begin{theorem}
+\(\rho\) is irreducible if and only if \(\dim_k(V) = 1\).
+\end{theorem}
+\enquote{\(\Leftarrow\)} is trivial.\\
+For \enquote{\(\Rightarrow\)}, we use the following two lemmas:
+\begin{lemma}
+For all \(g \in G\), \(\rho(g)\) is a Representation Endomorphism.
+\end{lemma}
+\begin{lemma}
+Every Representation Endomorphism is given by multiplication with a scalar.
+\end{lemma}
 \end{frame}
 
 \note{
 \begin{itemize}
-\item This is from the \enquote{undergraduate topics not yet in Mathlib page}
+\item in the first lemma, we use the fact that \(G\) is abelian
+\item the second lemma is a corollary of Schur's lemma
 \end{itemize}
 }
+
+\begin{frame}
+\frametitle{Proof of the theorem}
+With these two lemmas, we can prove the following fact:
+\begin{lemma}
+Every one-dimensional subspace of \(V\) is an invariant subspace.
+\end{lemma}
+\pause
+Now, we can use proof by contradiction:
+\pause
+\begin{enumerate}
+\item Assume \(\dim (V) > 1\).
+\pause
+\item Then, \(V\) has a proper subspace with dimension 1.
+\pause
+\item So \(V\) has a proper invariant subspace.
+\pause
+\item This is a contradiction to the irreducibility of \(V\).
+\end{enumerate}
+\end{frame}
 
 \section{Formalization}
 \begin{frame}
