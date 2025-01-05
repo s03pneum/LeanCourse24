@@ -145,11 +145,14 @@ Then \(\rho\) is irreducible if and only if \(\dim_k(V) = 1\).
 \begin{theorem}
 \(\rho\) is irreducible if and only if \(\dim_k(V) = 1\).
 \end{theorem}
+\pause
 \enquote{\(\Leftarrow\)} is trivial.\\
+\pause
 For \enquote{\(\Rightarrow\)}, we use the following two lemmas:
 \begin{lemma}
 For all \(g \in G\), \(\rho(g)\) is a Representation Endomorphism.
 \end{lemma}
+\pause
 \begin{lemma}
 Every Representation Endomorphism is given by multiplication with a scalar.
 \end{lemma}
@@ -160,6 +163,7 @@ Every Representation Endomorphism is given by multiplication with a scalar.
 \item in the first lemma, we use the fact that \(G\) is abelian
 \item the second lemma is a corollary of Schur's lemma
 \item There are versions of Schur's lemma in Mathlib, but we proved it from scratch
+\item in the second lemma, we use that the field is algebraically closed
 \end{itemize}
 }
 
@@ -306,12 +310,15 @@ Of course, the translation works the other way as well!
 
 \begin{frame}[fragile]
 \frametitle{The translation in Mathlib}
-The theorem \verb+asAlgebraHomdef+ and the definition \verb+Representation.asModule+ translate a \verb+Representation+ to the corresponding algebra, \verb+Representation.ofModule+ is for the other direction.\\
+Irreducibility of representations translates to irreducibility of modules.\\
 \pause
-\vspace{1cm}
 Things like the theorem of Maschke are not formulated for \verb+Representation+s, but for algebras.\\
 \pause
-Irreducibility of representations translates to irreducibility of modules.
+\vspace{1cm}
+\begin{itemize}
+\item \verb+Representation.asModule+ translates \verb+Representation+ to algebra
+\item \verb+Representation.ofModule+ translages algebra to \verb+Representation+
+\end{itemize}
 \end{frame}
 
 \section{Future work}

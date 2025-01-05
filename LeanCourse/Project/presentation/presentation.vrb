@@ -1,7 +1,10 @@
 \frametitle{The translation in Mathlib}
-The theorem \verb+asAlgebraHomdef+ and the definition \verb+Representation.asModule+ translate a \verb+Representation+ to the corresponding algebra, \verb+Representation.ofModule+ is for the other direction.\\
+Irreducibility of representations translates to irreducibility of modules.\\
 \pause
-\vspace{1cm}
 Things like the theorem of Maschke are not formulated for \verb+Representation+s, but for algebras.\\
 \pause
-Irreducibility of representations translates to irreducibility of modules.
+\vspace{1cm}
+\begin{itemize}
+\item \verb+Representation.asModule+ translates \verb+Representation+ to algebra
+\item \verb+Representation.ofModule+ translages algebra to \verb+Representation+
+\end{itemize}
