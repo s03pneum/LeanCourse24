@@ -42,7 +42,26 @@ theorem representationIrreducibility_equiv_simpleModule {k G V : Type*} [CommRin
         }⟩, by simp⟩, by {
           simp
           intro r u hu
-          sorry
+          let r' : (MonoidAlgebra k G) := r • 1
+          have huMod : ∀ w, w ∈ U → r' • w ∈ U := by exact fun w a ↦ Submodule.smul_mem U r' a
+          specialize huMod u hu
+          have tsst : IsScalarTower k (MonoidAlgebra k G) ρ.asModule := by
+            refine { smul_assoc := ?smul_assoc }
+            intro x a b
+            sorry
+          have test : r • u = (@HSMul.hSMul (MonoidAlgebra k G) ρ.asModule ρ.asModule instHSMul r' u) := by
+            symm
+            calc
+              (@HSMul.hSMul (MonoidAlgebra k G) ρ.asModule ρ.asModule instHSMul r' u) = (@HSMul.hSMul (MonoidAlgebra k G) ρ.asModule ρ.asModule instHSMul (r • 1) u) := by rfl
+              _ = r • (@HSMul.hSMul (MonoidAlgebra k G) ρ.asModule ρ.asModule instHSMul 1 u) := by{
+                apply smul_assoc
+              }
+              _ = r • u := by {
+                have tt' : @HSMul.hSMul (MonoidAlgebra k G) ρ.asModule ρ.asModule instHSMul 1 u  = u := by sorry
+                rw [tt']
+              }
+          rw [test]
+          assumption
         }⟩
         use U'
         constructor
