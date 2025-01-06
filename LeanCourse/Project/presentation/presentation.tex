@@ -47,6 +47,10 @@
 \titlepage
 \end{frame}
 
+\note{
+Introduction and Outline: Raphael
+}
+
 \begin{frame}
 \frametitle{Outline}
 \tableofcontents
@@ -66,6 +70,7 @@ Convention: \(V\) has finite dimension, unless explicitly stated otherwise.
 \end{frame}
 
 \note{
+Representations of finite groups: Paul
 \begin{itemize}
 \item intuition of a symmetry group
 \item this definition is somewhat restricted: Monoid instead of group, module instead of vector space is possible
@@ -92,6 +97,10 @@ Representation \(\rho: D_{2n} \to \GL (\R^3)\) with
 \end{example}
 \end{frame}
 
+\note{
+Slide with the example: Raphael
+}
+
 \begin{frame}
 \frametitle{Invariant subspaces, Irreducibility}
 \begin{definition}
@@ -109,6 +118,11 @@ The \(XY\)-Plane is an invariant subspace.
 \end{example}
 \end{frame}
 
+\note{
+Invariant Subspaces, Irreducibility: Paul
+-> The Z-axis is an invariant subspace as well (and a complement!)
+}
+
 \begin{frame}
 \frametitle{Irreducibility, Representation Homomorphisms}
 \begin{definition}
@@ -124,6 +138,11 @@ For representations \(V\) and \(W\), a \textbf{homomorphism} is a linear map \(\
 \item If \(V\) and \(W\) are irreducible, then \(\theta: V \to W\) is 0 or bijective.
 \end{itemize}
 \end{frame}
+
+\note{
+Irreducibility, Representation Homomorphisms: Raphael
+The following section: Paul
+}
 
 \section{Finite abelian groups}
 \begin{frame}
@@ -187,6 +206,10 @@ Now, we can use proof by contradiction:
 \end{enumerate}
 \end{frame}
 
+\note{
+This section is followed by Paul showing the code: General structure, multiple files, definitions...
+}
+
 \section{Formalization}
 \begin{frame}[fragile]
 \frametitle{Representations in Mathlib}
@@ -200,6 +223,10 @@ end
 \pause
 Apart from that, the definitions introduced in the beginning of this presentation are missing in Mathlib.
 \end{frame}
+
+\note{
+Representations in Mathlib: Raphael
+}
 
 \begin{frame}[fragile]
 \frametitle{Definitions}
@@ -216,6 +243,7 @@ def degree {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module
 \end{frame}
 
 \note{
+Definitions: Paul
 \begin{itemize}
 \item Left out irreducibilty for space
 \item Commentary about class inference
@@ -232,6 +260,10 @@ def degree {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module
 \end{lstlisting}
 \end{frame}
 
+\note{Representation Homomorphisms: Raphael
+- say that this definition adapts Mathlib definitions of maps
+- say that we tried to match the Mathlib style in other definitions as well}
+
 \begin{frame}[fragile]
 \frametitle{Coercions}
 \begin{lstlisting}
@@ -243,6 +275,10 @@ instance {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module
     simp; intro x y; simp
 \end{lstlisting}
 \end{frame}
+
+\note{
+Coercions: Paul
+}
 
 \begin{frame}[fragile]
 \frametitle{Registering Instances}
@@ -260,6 +296,8 @@ instance repr_yields_reprHom_commMonoid {k G V : Type*} [CommSemiring k] [CommMo
 \end{frame}
 
 \note{
+Registering Instances: Raphael
+The following section: Raphael
 \begin{itemize}
 \item Code in place of sorry is left out for space
 \item The rest of the code is using these definitions => probably not that interesting
@@ -320,6 +358,10 @@ Things like the theorem of Maschke are not formulated for \verb+Representation+s
 \item \verb+Representation.ofModule+ translages algebra to \verb+Representation+
 \end{itemize}
 \end{frame}
+
+\note{
+The following section and the outro: Paul
+}
 
 \section{Future work}
 \begin{frame}

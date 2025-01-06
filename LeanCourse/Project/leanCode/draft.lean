@@ -57,7 +57,9 @@ theorem representationIrreducibility_equiv_simpleModule {k G V : Type*} [CommRin
                 apply smul_assoc
               }
               _ = r • u := by {
-                have tt' : @HSMul.hSMul (MonoidAlgebra k G) ρ.asModule ρ.asModule instHSMul 1 u  = u := by sorry
+                have tt' : @HSMul.hSMul (MonoidAlgebra k G) ρ.asModule ρ.asModule instHSMul 1 u  = u := by
+                  sorry
+
                 rw [tt']
               }
           rw [test]
