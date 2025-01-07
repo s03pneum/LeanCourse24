@@ -51,7 +51,64 @@ theorem representationIrreducibility_equiv_simpleModule {k G V : Type*} [CommRin
       unfold Representation.IsIrreducible
       push_neg
 
-      sorry
+      let U' : Submodule k V := ⟨⟨⟨U.carrier, sorry⟩, sorry⟩, sorry⟩
+      use U'
+      constructor
+      . sorry
+      . constructor
+        . by_contra t
+          have uZero : ∀ u : U, u = 0 := by
+            intro u
+            simp at t
+            by_contra t'
+            have UneBot : U' ≠ ⊥ := by
+              have botCar : (⊥ : Submodule k V).carrier = {0} := by rfl
+              have U'Car : U'.carrier = U.carrier := by rfl
+              have carComp : U'.carrier ≠ (⊥ : Submodule k V).carrier := by
+                rw [botCar, U'Car]
+                by_contra t''
+                have uBot : U = ⊥ := by
+                  ext z
+                  constructor
+                  . intro zU
+                    refine (Submodule.mem_bot (MonoidAlgebra k G)).mpr ?h.mp.a
+                    have zCar : z ∈ U.carrier := by exact zU
+                    rw [t''] at zCar
+                    simp at zCar
+                    assumption
+                  . intro zBot
+                    simp at zBot
+                    rw [zBot]
+                    exact Submodule.zero_mem U
+                obtain ⟨hU, _⟩ := hU
+                contradiction
+              exact
+                False.elim
+                  (carComp
+                    (congrArg AddSubsemigroup.carrier
+                      (congrArg AddSubmonoid.toAddSubsemigroup
+                        (congrArg Submodule.toAddSubmonoid t))))
+            contradiction
+          have uBot : U = ⊥ := by
+            rw [← Submodule.zero_eq_bot]
+            refine Eq.symm (Submodule.ext ?hyp)
+            intro v
+            constructor
+            . intro v0
+              simp at v0
+              rw [v0]
+              exact Submodule.zero_mem U
+            . intro vU
+              let v' : U := ⟨v, vU⟩
+              specialize uZero v'
+              simp
+              by_contra t'
+              have t'' : v' ≠ 0 := by
+                exact Subtype.coe_ne_coe.mp t'
+              contradiction
+          obtain ⟨hU, _⟩ := hU
+          contradiction
+        . sorry --Look on the previous proof, use ext and some equalities (of carriers)
     }
     contradiction
   . sorry
