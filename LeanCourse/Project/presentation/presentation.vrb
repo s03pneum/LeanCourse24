@@ -1,7 +1,7 @@
 \frametitle{The translation in Mathlib}
-Irreducibility of representations translates to irreducibility of modules.\\
+Irreducibility of representations translates to simplicity of modules.\\
 \pause
-Things like the theorem of Maschke are not formulated for \verb+Representation+s, but for algebras.\\
+Things like the theorem of Maschke are not formulated for \verb+Representation+s, but for modules over algebras.\\
 \pause
 \vspace{1cm}
 \begin{itemize}

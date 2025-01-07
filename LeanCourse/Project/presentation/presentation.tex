@@ -252,6 +252,9 @@ Definitions: Paul
 
 \begin{frame}[fragile]
 \frametitle{Representation Homomorphisms}
+\begin{definition}
+For representations \(V\) and \(W\), a \textbf{homomorphism} is a linear map \(\theta: V\to W\) with \(\theta(gv) = g\theta(v)\) for \(\forall g\in G, v\in V\).
+\end{definition}
 \begin{lstlisting}
 /-- Definition of Homomorhpisms between Representations -/
 @[ext] class RepresentationHom {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
@@ -328,7 +331,7 @@ Irreducibilty is contained in category theory
 
 \begin{frame}
 \frametitle{Two views on Representations}
-A representation \((V, \rho)\) can be \enquote{translated} to a \(k\)-algebra \(kG\):\\
+A representation \((V, \rho)\) can be \enquote{translated} to a module over a \(k\)-algebra \(kG\):\\
 \pause
 Take a \(k\)-module with basis \(\{g\vert g\in G\}\) and multiplication
 \begin{equation*}
@@ -337,9 +340,8 @@ Take a \(k\)-module with basis \(\{g\vert g\in G\}\) and multiplication
 \pause
 with action
 \begin{equation*}
-kG\times V\to V, \left(\sum_{g\in G}\lambda_gg, v\right) \mapsto \sum_{g\in G}\lambda_g(gv)
+kG\times V\to V, \left(\sum_{g\in G}\lambda_gg, v\right) \mapsto \sum_{g\in G}\lambda_g(gv).
 \end{equation*}
-on \(V\).
 \end{frame}
 
 \note{
@@ -348,9 +350,9 @@ Of course, the translation works the other way as well!
 
 \begin{frame}[fragile]
 \frametitle{The translation in Mathlib}
-Irreducibility of representations translates to irreducibility of modules.\\
+Irreducibility of representations translates to simplicity of modules.\\
 \pause
-Things like the theorem of Maschke are not formulated for \verb+Representation+s, but for algebras.\\
+Things like the theorem of Maschke are not formulated for \verb+Representation+s, but for modules over algebras.\\
 \pause
 \vspace{1cm}
 \begin{itemize}

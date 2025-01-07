@@ -5,8 +5,62 @@ import LeanCourse.Project.leanCode.RepresentationHom
 open Function Set Classical Representation
 noncomputable section
 
-/- A representation is irreducible iff the corresponding module is simple-/
 theorem representationIrreducibility_equiv_simpleModule {k G V : Type*} [CommRing k] [Monoid G] [AddCommGroup V] [Module k V] [Nontrivial V]
+  (ρ : Representation k G V) : ρ.IsIrreducible ↔ IsSimpleModule (MonoidAlgebra k G) ρ.asModule:= by{
+  constructor
+  . intro h
+    refine isSimpleOrder_iff_isAtom_top.mpr ?mp.a
+    /- Proof by contradiction-/
+    by_contra ct
+
+    /- There is a proper submodule over kG-/
+    have h' : ∃ U : (Submodule (MonoidAlgebra k G) ρ.asModule), U ≠ ⊥ ∧ U ≠ ⊤ := by {
+      have defAtom : ¬ (⊤ ≠ (⊥ : (Submodule (MonoidAlgebra k G) ρ.asModule)) ∧
+        ∀ W : (Submodule (MonoidAlgebra k G) ρ.asModule), W ≠ ⊥ → W ≤ ⊤ → ⊤ ≤ W) := by{
+          by_contra tc
+          have ct' : IsAtom (⊤ : (Submodule (MonoidAlgebra k G) ρ.asModule)) := by
+            exact isAtom_iff_le_of_ge.mpr tc
+          contradiction
+        }
+      push_neg at defAtom
+      have top_neq_bot : ⊤ ≠ (⊥ : (Submodule (MonoidAlgebra k G) ρ.asModule)) := by
+        refine (Submodule.ne_bot_iff ⊤).mpr ?_
+        have nontrV : ∃ x : V, x ≠ 0 := by exact exists_ne 0
+        have nontrAsModule : ∃ x : ρ.asModule, x ≠ 0 := by
+          obtain ⟨x, hx⟩ := nontrV
+          use x
+        obtain ⟨x, hx⟩ := nontrAsModule
+        use x
+        constructor
+        . exact _root_.trivial
+        . assumption
+      specialize defAtom top_neq_bot
+      obtain ⟨W, hW⟩ := defAtom
+      use W
+      constructor
+      . exact hW.left
+      . obtain ⟨_, ⟨_, hW⟩⟩ := hW
+        simp at hW
+        assumption
+    }
+    obtain ⟨U, hU⟩ := h'
+
+    /- FINE UNTIL HERE-/
+
+    have ht : ¬ρ.IsIrreducible := by{
+      unfold Representation.IsIrreducible
+      push_neg
+
+      sorry
+    }
+    contradiction
+  . sorry
+}
+
+/- Old try, we try to repair this above-/
+
+/- A representation is irreducible iff the corresponding module is simple-/
+theorem representationIrreducibility_equiv_simpleModule' {k G V : Type*} [CommRing k] [Monoid G] [AddCommGroup V] [Module k V] [Nontrivial V]
   (ρ : Representation k G V) : ρ.IsIrreducible ↔ IsSimpleModule (MonoidAlgebra k G) ρ.asModule:= by
     constructor
     . intro h
@@ -14,19 +68,35 @@ theorem representationIrreducibility_equiv_simpleModule {k G V : Type*} [CommRin
       /- Proof by contradiction-/
       by_contra ct
 
-      /- There is a submodule over kG-/
+      /- There is a proper submodule over kG-/
       have h' : ∃ U : (Submodule (MonoidAlgebra k G) ρ.asModule), U ≠ ⊥ ∧ U ≠ ⊤ := by {
-        by_contra cct
-        have ct' : IsAtom (⊤ : (Submodule (MonoidAlgebra k G) ρ.asModule)) := by
-          refine isAtom_iff_le_of_ge.mpr ?_
-          constructor
-          . sorry
-          . intro W WneBot Wtriv
-            by_contra ctt
-            simp at ctt
-            have cct' : ∃ U : (Submodule (MonoidAlgebra k G) ρ.asModule), U ≠ ⊥ ∧ U ≠ ⊤ := by use W
+        have defAtom : ¬ (⊤ ≠ (⊥ : (Submodule (MonoidAlgebra k G) ρ.asModule)) ∧
+          ∀ W : (Submodule (MonoidAlgebra k G) ρ.asModule), W ≠ ⊥ → W ≤ ⊤ → ⊤ ≤ W) := by{
+            by_contra tc
+            have ct' : IsAtom (⊤ : (Submodule (MonoidAlgebra k G) ρ.asModule)) := by
+              exact isAtom_iff_le_of_ge.mpr tc
             contradiction
-        contradiction
+          }
+        push_neg at defAtom
+        have top_neq_bot : ⊤ ≠ (⊥ : (Submodule (MonoidAlgebra k G) ρ.asModule)) := by
+          refine (Submodule.ne_bot_iff ⊤).mpr ?_
+          have nontrV : ∃ x : V, x ≠ 0 := by exact exists_ne 0
+          have nontrAsModule : ∃ x : ρ.asModule, x ≠ 0 := by
+            obtain ⟨x, hx⟩ := nontrV
+            use x
+          obtain ⟨x, hx⟩ := nontrAsModule
+          use x
+          constructor
+          . exact _root_.trivial
+          . assumption
+        specialize defAtom top_neq_bot
+        obtain ⟨W, hW⟩ := defAtom
+        use W
+        constructor
+        . exact hW.left
+        . obtain ⟨_, ⟨_, hW⟩⟩ := hW
+          simp at hW
+          assumption
       }
       obtain ⟨U, hU⟩ := h'
 
@@ -59,7 +129,6 @@ theorem representationIrreducibility_equiv_simpleModule {k G V : Type*} [CommRin
               _ = r • u := by {
                 have tt' : @HSMul.hSMul (MonoidAlgebra k G) ρ.asModule ρ.asModule instHSMul 1 u  = u := by
                   sorry
-
                 rw [tt']
               }
           rw [test]
