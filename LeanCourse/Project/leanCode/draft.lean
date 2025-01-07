@@ -46,6 +46,7 @@ theorem representationIrreducibility_equiv_simpleModule {k G V : Type*} [CommRin
     obtain ⟨U, hU⟩ := h'
 
     /- FINE UNTIL HERE-/
+    /- ρ.asModuleEquiv translates elements!!!-/
 
     have ht : ¬ρ.IsIrreducible := by{
       unfold Representation.IsIrreducible
@@ -53,17 +54,36 @@ theorem representationIrreducibility_equiv_simpleModule {k G V : Type*} [CommRin
 
       let U' : Submodule k V := ⟨⟨⟨U.carrier, sorry⟩, sorry⟩, sorry⟩
       use U'
+      have U'Car : U'.carrier = U.carrier := by rfl
+      have botCar : (⊥ : Submodule k V).carrier = {0} := by rfl
       constructor
-      . sorry
+      . simp [IsInvariantSubspace]
+        intro g u uU'
+        let u' : ρ.asModule := u
+        /- This should become its one lemma!!! TODO-/
+        have transReprAlgebra : (ρ g) u = ρ.asModuleEquiv (((MonoidAlgebra.single) g (1 : k)) • u') := by
+          symm
+          calc
+            ρ.asModuleEquiv (((MonoidAlgebra.single) g (1 : k)) • u') = (ρ.asAlgebraHom ((MonoidAlgebra.single) g (1 : k))) (ρ.asModuleEquiv u') := by rfl
+            _ = (ρ.asAlgebraHom ((MonoidAlgebra.single) g (1 : k))) u := by rfl
+            _ = (ρ g) u := by refine LinearMap.congr_fun ?h u; exact asAlgebraHom_single_one ρ g
+        rw [transReprAlgebra]
+        have showAsCar : (((MonoidAlgebra.single) g (1 : k)) • u') ∈ U'.carrier := by
+          rw [U'Car]
+          have smulInModule : (((MonoidAlgebra.single) g (1 : k)) • u') ∈ U := by{
+            exact Submodule.smul_mem U (MonoidAlgebra.single g 1) uU'
+          }
+          assumption
+        assumption
+
       . constructor
+        /- Refactor this part using ext-/
         . by_contra t
           have uZero : ∀ u : U, u = 0 := by
             intro u
             simp at t
             by_contra t'
             have UneBot : U' ≠ ⊥ := by
-              have botCar : (⊥ : Submodule k V).carrier = {0} := by rfl
-              have U'Car : U'.carrier = U.carrier := by rfl
               have carComp : U'.carrier ≠ (⊥ : Submodule k V).carrier := by
                 rw [botCar, U'Car]
                 by_contra t''
@@ -108,7 +128,25 @@ theorem representationIrreducibility_equiv_simpleModule {k G V : Type*} [CommRin
               contradiction
           obtain ⟨hU, _⟩ := hU
           contradiction
-        . sorry --Look on the previous proof, use ext and some equalities (of carriers)
+        . by_contra t
+          have uTop : U = ⊤ := by
+            ext x
+            constructor
+            . intro xU
+              exact _root_.trivial
+            . intro xTop
+              have xUCar : x ∈ U.carrier := by
+                rw [← U'Car]
+                have carComp : U'.carrier = (⊤ : Submodule k V).carrier := by
+                  exact
+                    congrArg AddSubsemigroup.carrier
+                      (congrArg AddSubmonoid.toAddSubsemigroup
+                        (congrArg Submodule.toAddSubmonoid t))
+                rw [carComp]
+                simp
+              exact xUCar
+          obtain ⟨_, hU⟩ := hU
+          contradiction
     }
     contradiction
   . sorry
