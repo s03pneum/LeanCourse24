@@ -8,7 +8,7 @@ noncomputable section
 theorem representationIrreducibility_equiv_simpleModule {k G V : Type*} [CommRing k] [Monoid G] [AddCommGroup V] [Module k V] [Nontrivial V]
   (ρ : Representation k G V) : ρ.IsIrreducible ↔ IsSimpleModule (MonoidAlgebra k G) ρ.asModule:= by{
   constructor
-  . intro h
+  . sorry/-intro h
     refine isSimpleOrder_iff_isAtom_top.mpr ?mp.a
     /- Proof by contradiction-/
     by_contra ct
@@ -45,7 +45,6 @@ theorem representationIrreducibility_equiv_simpleModule {k G V : Type*} [CommRin
     }
     obtain ⟨U, hU⟩ := h'
 
-    /- FINE UNTIL HERE-/
     /- ρ.asModuleEquiv translates elements!!!-/
 
     have ht : ¬ρ.IsIrreducible := by{
@@ -169,6 +168,59 @@ theorem representationIrreducibility_equiv_simpleModule {k G V : Type*} [CommRin
           obtain ⟨_, hU⟩ := hU
           contradiction
     }
-    contradiction
-  . sorry
+    contradiction-/
+  . intro h
+    unfold Representation.IsIrreducible
+    intro U hU
+
+    /-translate to a kG-Module-/
+    let U' : Submodule (MonoidAlgebra k G) ρ.asModule := ⟨⟨⟨U.carrier, by {
+      simp
+      intro a b aU bU
+      exact (Submodule.add_mem_iff_right U aU).mpr bU
+    }⟩, by {
+      simp
+    }⟩, by{
+      simp
+      intro r x xU
+      have smulInstance : SMul (MonoidAlgebra k G) k := by exact { smul := fun a a ↦ a }
+      have isscalartowerInstance : IsScalarTower (MonoidAlgebra k G) k ρ.asModule := by{
+        refine { smul_assoc := ?smul_assoc }
+        intro x y z
+        calc
+          (x • y) • z = x • (y • z) := by sorry
+
+      }
+      apply Submodule.smul_of_tower_mem
+      assumption
+    }⟩
+    have U'trivial : U' = ⊥ ∨ U' = ⊤ := by exact eq_bot_or_eq_top U'
+    have UU'Car : U.carrier = U'.carrier := by rfl
+    obtain U'trivial|U'trivial := U'trivial
+    . left
+      simp
+      ext x
+      constructor
+      . intro xU
+        have xU'Car : x ∈ U'.carrier := by
+          rw [← UU'Car]
+          assumption
+        rw [U'trivial] at xU'Car
+        simp at xU'Car
+        rw [xU'Car]
+        rfl
+      . intro xBot
+        simp at xBot
+        rw [xBot]
+        exact Submodule.zero_mem U
+    . right
+      ext x
+      constructor
+      . intro xU
+        exact _root_.trivial
+      . intro xTop
+        have xUCar : x ∈ U.carrier := by
+          rw [UU'Car, U'trivial]
+          simp
+        assumption
 }
