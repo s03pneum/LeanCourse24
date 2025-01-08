@@ -5,7 +5,7 @@ import LeanCourse.Project.leanCode.RepresentationHom
 open Function Set Classical Representation
 noncomputable section
 
-theorem representationIrreducibility_equiv_simpleModule {k G V : Type*} [CommRing k] [Monoid G] [AddCommGroup V] [Module k V] [Nontrivial V]
+theorem representationIrreducibility_equiv_simpleModule {k G V : Type*} [CommRing k] [Monoid G] [AddCommGroup V] [Module k V] [Nontrivial V] [Finite G]
   (ρ : Representation k G V) : ρ.IsIrreducible ↔ IsSimpleModule (MonoidAlgebra k G) ρ.asModule:= by{
   constructor
   . sorry/-intro h
@@ -183,16 +183,29 @@ theorem representationIrreducibility_equiv_simpleModule {k G V : Type*} [CommRin
     }⟩, by{
       simp
       intro r x xU
-      have smulInstance : SMul (MonoidAlgebra k G) k := by exact { smul := fun a a ↦ a }
-      have isscalartowerInstance : IsScalarTower (MonoidAlgebra k G) k ρ.asModule := by{
-        refine { smul_assoc := ?smul_assoc }
-        intro x y z
+      rw [← MonoidAlgebra.sum_single r]
+      have asFinSum : Finsupp.sum r MonoidAlgebra.single • x = (∑ g ∈ r.support, MonoidAlgebra.single g (r g)) • x := by rfl
+      rw [asFinSum]
+      rw [Finset.sum_smul]
+      apply Submodule.sum_mem
+      intro g grsupp
+      /-
+      have transReprAlgebra : (ρ g) u = ρ.asModuleEquiv (((MonoidAlgebra.single) g (1 : k)) • u') := by
+        symm
         calc
-          (x • y) • z = x • (y • z) := by sorry
-
+          ρ.asModuleEquiv (((MonoidAlgebra.single) g (1 : k)) • u') = (ρ.asAlgebraHom ((MonoidAlgebra.single) g (1 : k))) (ρ.asModuleEquiv u') := by rfl
+          _ = (ρ.asAlgebraHom ((MonoidAlgebra.single) g (1 : k))) u := by rfl
+          _ = (ρ g) u := by refine LinearMap.congr_fun ?h u; exact asAlgebraHom_single_one ρ g
+      -/
+      have transAlgebraRepr : (MonoidAlgebra.single g (r g) • x) = (r g) • (ρ g (ρ.asModuleEquiv x)) := by {
+        calc
+          (MonoidAlgebra.single g (r g) • x) = (ρ.asAlgebraHom (MonoidAlgebra.single g (r g))) (ρ.asModuleEquiv x) := by rfl
+          _ = (r g) • (ρ g (ρ.asModuleEquiv x)) := by rw [Representation.asAlgebraHom_single]; simp
       }
-      apply Submodule.smul_of_tower_mem
-      assumption
+      rw [transAlgebraRepr]
+      refine Submodule.smul_mem U (r g) ?_
+      unfold Representation.IsInvariantSubspace at hU
+      apply (hU g ⟨x, by assumption⟩)
     }⟩
     have U'trivial : U' = ⊥ ∨ U' = ⊤ := by exact eq_bot_or_eq_top U'
     have UU'Car : U.carrier = U'.carrier := by rfl
