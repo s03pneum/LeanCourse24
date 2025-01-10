@@ -1,3 +1,7 @@
+remarks by van doorn:
+- find a theorem in mathlib about dimensions of modules
+- use structure instead of class
+
 - connect two kinds of representations in Mathlib (as a homomorphism, as a module)
 -> "coercion" from homomorphism to module (already given in Mathlib)
 -> "coercion" from module to homomorphism (probably not given in Mathlib, research)
