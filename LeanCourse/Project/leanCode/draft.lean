@@ -6,6 +6,40 @@ noncomputable section
 
 namespace Representation
 
+/-
+# Overview
+- `representationAction_asSmul` translates the action of a group element to a scalar
+  multiplication in the corresponding kG-module
+- `smul_kModule_to_kGmodule` translates scalar multiplication in module of representation
+  to scalar multiplication in the corresponding kG-module
+- `asSubmodule` constructs a Submodule of (MonoidAlgebra k G) from an invariant subspace
+- `ofSubmodule` constructs a Subspace of ρ from a submodule of the corresponding kG-module
+- `ofSubmodule_isIrreducible` submodule constructed by Representation.ofSubmodule is invariant
+- `nonSimpleModule_has_nontrivialSubmodule` if a module is not simple, it has a submodule that is neither ⊤ nor ⊥
+- `representationIrreducible_equiv_simpleModule` Representation is irreducible iff corresponding kG-module is simple
+-/
+
+/- Representation action as scalar multiplication over Monoid Algebra-/
+theorem representationAction_asSmul {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
+  (ρ : Representation k G V) (g : G) (u : ρ.asModule) : (ρ g) u = ((MonoidAlgebra.single) g (1 : k)) • u := by
+  symm
+  calc
+    ρ.asModuleEquiv (((MonoidAlgebra.single) g (1 : k)) • u) = (ρ.asAlgebraHom ((MonoidAlgebra.single) g (1 : k))) (ρ.asModuleEquiv u) := by rfl
+    _ = (ρ.asAlgebraHom ((MonoidAlgebra.single) g (1 : k))) u := by rfl
+    _ = (ρ g) u := by refine LinearMap.congr_fun ?h u; exact asAlgebraHom_single_one ρ g
+
+/- Scalar multiplication in k-module as scalar multiplication in corresponding kG-module-/
+theorem smul_kModule_to_kGmodule {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
+  (ρ : Representation k G V) (c : k) (v : ρ.asModule) : c • v = ρ.asModuleEquiv ((MonoidAlgebra.single (1 : G) c) • v) := by
+  symm
+  calc
+    ρ.asModuleEquiv ((MonoidAlgebra.single (1 : G) c) • v) = (ρ.asAlgebraHom (MonoidAlgebra.single (1 : G) c)) (ρ.asModuleEquiv v) := by rfl
+    _ = (ρ.asAlgebraHom (MonoidAlgebra.single (1 : G) c)) v := by rfl
+    _ = (c • ρ (1 : G)) v := by rw [asAlgebraHom_single]
+    _ = c • ((ρ 1) v) := by rfl
+    _ = c • ((1 : V →ₗ[k] V) v) := by rw [MonoidHom.map_one ρ]
+    _ = c • v := by simp
+
 /- An invariant subspace corresponds to a submodule of ρ.asModule-/
 instance asSubmodule {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
   (ρ : Representation k G V) (U : Submodule k V) (hU : IsInvariantSubspace U ρ): (Submodule (MonoidAlgebra k G) ρ.asModule) where
@@ -47,17 +81,7 @@ instance ofSubmodule {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V
   smul_mem' := by
     simp
     intro c v vU
-    /- This should become its own lemma!!! TODO-/
-    have transModuleAlgebra : c • v = ρ.asModuleEquiv ((MonoidAlgebra.single (1 : G) c) • v) := by
-      symm
-      calc
-        ρ.asModuleEquiv ((MonoidAlgebra.single (1 : G) c) • v) = (ρ.asAlgebraHom (MonoidAlgebra.single (1 : G) c)) (ρ.asModuleEquiv v) := by rfl
-        _ = (ρ.asAlgebraHom (MonoidAlgebra.single (1 : G) c)) v := by rfl
-        _ = (c • ρ (1 : G)) v := by rw [asAlgebraHom_single]
-        _ = c • ((ρ 1) v) := by rfl
-        _ = c • ((1 : V →ₗ[k] V) v) := by rw [MonoidHom.map_one ρ]
-        _ = c • v := by simp
-    rw [transModuleAlgebra]
+    rw [smul_kModule_to_kGmodule]
     exact Submodule.smul_mem U (MonoidAlgebra.single 1 c) vU
 
 /- The submodule constructed by Representation.ofSubmodule is invariant-/
@@ -65,15 +89,8 @@ theorem ofSubmodule_isIrreducible {k G V: Type*} [CommSemiring k] [Monoid G] [Ad
   (ρ : Representation k G V) (U : Submodule (MonoidAlgebra k G) ρ.asModule) : IsInvariantSubspace (ofSubmodule ρ U) ρ := by
   simp [IsInvariantSubspace]
   intro g u uU'
-  /- This should become its own lemma!!! TODO-/
-  have transReprAlgebra : ((ρ g) u : V) = ρ.asModuleEquiv (((MonoidAlgebra.single) g (1 : k)) • u) := by
-    symm
-    calc
-      ρ.asModuleEquiv (((MonoidAlgebra.single) g (1 : k)) • u) = (ρ.asAlgebraHom ((MonoidAlgebra.single) g (1 : k))) (ρ.asModuleEquiv u) := by rfl
-      _ = (ρ.asAlgebraHom ((MonoidAlgebra.single) g (1 : k))) u := by rfl
-      _ = (ρ g) u := by refine LinearMap.congr_fun ?h u; exact asAlgebraHom_single_one ρ g
   have theoCoerced : ((ρ g) u : ρ.asModule) ∈ ρ.ofSubmodule U := by
-    rw [transReprAlgebra]
+    rw [representationAction_asSmul ρ g u]
     have showAsCar : (((MonoidAlgebra.single) g (1 : k)) • u) ∈ U.carrier := by
       have smulInModule : (((MonoidAlgebra.single) g (1 : k)) • u) ∈ U := by exact Submodule.smul_mem U (MonoidAlgebra.single g 1) uU'
       assumption
@@ -81,7 +98,7 @@ theorem ofSubmodule_isIrreducible {k G V: Type*} [CommSemiring k] [Monoid G] [Ad
   assumption
 
 /- If a nontrivial module is not simple, it has a submodule that is neither ⊤ nor ⊥-/
-theorem nonSimpleModule_has_nontrivialSubmodule {k V : Type*} [Ring k] [AddCommGroup V] [Module k V] [Nontrivial V]
+lemma nonSimpleModule_has_nontrivialSubmodule {k V : Type*} [Ring k] [AddCommGroup V] [Module k V] [Nontrivial V]
    : ¬ IsSimpleModule k V → ∃ U : Submodule k V, U ≠ ⊥ ∧ U ≠ ⊤ := by{
   intro h
   by_contra t
@@ -118,15 +135,18 @@ theorem nonSimpleModule_has_nontrivialSubmodule {k V : Type*} [Ring k] [AddCommG
 theorem representationIrreducible_equiv_simpleModule {k G V : Type*} [CommRing k] [Monoid G] [AddCommGroup V] [Module k V] [Nontrivial V] [Finite G]
   (ρ : Representation k G V) : ρ.IsIrreducible ↔ IsSimpleModule (MonoidAlgebra k G) ρ.asModule:= by{
   constructor
-  . intro h
+  . /- Given irreducibility of representation, show simplicity of kG-module-/
+    intro h
 
     /- Proof by contradiction-/
     by_contra ct
 
+    /- Take submodule of kG-module-/
     have nontrAsModule: Nontrivial ρ.asModule := by assumption
     have h' : ∃ U : (Submodule (MonoidAlgebra k G) ρ.asModule), U ≠ ⊥ ∧ U ≠ ⊤ := by exact nonSimpleModule_has_nontrivialSubmodule ct
     obtain ⟨U, hU⟩ := h'
 
+    /- Use that to show that ρ has irreducible subspace-/
     have ht : ¬ρ.IsIrreducible := by{
       unfold Representation.IsIrreducible
       push_neg
@@ -176,7 +196,8 @@ theorem representationIrreducible_equiv_simpleModule {k G V : Type*} [CommRing k
           contradiction
     }
     contradiction
-  . intro h
+  . /- Given simplicity of module, show irreducibility of representation-/
+    intro h
     unfold Representation.IsIrreducible
     intro U hU
 
