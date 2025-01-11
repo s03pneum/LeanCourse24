@@ -1,14 +1,12 @@
 import Mathlib
 import LeanCourse.Project.leanCode.RepresentationHom
 
-/- open namespaces that you use to shorten names and enable notation. -/
-open Function Set Classical Representation
+open Function Set Classical
 noncomputable section
-
-/- Convert submodules of different modules -/
 
 namespace Representation
 
+/- An invariant subspace corresponds to a submodule of ρ.asModule-/
 instance asSubmodule {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
   (ρ : Representation k G V) (U : Submodule k V) (hU : IsInvariantSubspace U ρ): (Submodule (MonoidAlgebra k G) ρ.asModule) where
   carrier := U.carrier
@@ -36,6 +34,8 @@ instance asSubmodule {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V
     unfold Representation.IsInvariantSubspace at hU
     apply (hU g ⟨x, by assumption⟩)
 
+
+/- A submodule of ρ.asModule corresponds to a k-submodule of V-/
 instance ofSubmodule {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
   (ρ : Representation k G V) (U : Submodule (MonoidAlgebra k G) ρ.asModule) : (Submodule k ρ.asModule) where
   carrier := U.carrier
@@ -47,11 +47,11 @@ instance ofSubmodule {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V
   smul_mem' := by
     simp
     intro c v vU
-    let v' : ρ.asModule := v
-    have transModuleAlgebra : c • v = ρ.asModuleEquiv ((MonoidAlgebra.single (1 : G) c) • v') := by
+    /- This should become its own lemma!!! TODO-/
+    have transModuleAlgebra : c • v = ρ.asModuleEquiv ((MonoidAlgebra.single (1 : G) c) • v) := by
       symm
       calc
-        ρ.asModuleEquiv ((MonoidAlgebra.single (1 : G) c) • v') = (ρ.asAlgebraHom (MonoidAlgebra.single (1 : G) c)) (ρ.asModuleEquiv v') := by rfl
+        ρ.asModuleEquiv ((MonoidAlgebra.single (1 : G) c) • v) = (ρ.asAlgebraHom (MonoidAlgebra.single (1 : G) c)) (ρ.asModuleEquiv v) := by rfl
         _ = (ρ.asAlgebraHom (MonoidAlgebra.single (1 : G) c)) v := by rfl
         _ = (c • ρ (1 : G)) v := by rw [asAlgebraHom_single]
         _ = c • ((ρ 1) v) := by rfl
@@ -60,46 +60,71 @@ instance ofSubmodule {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V
     rw [transModuleAlgebra]
     exact Submodule.smul_mem U (MonoidAlgebra.single 1 c) vU
 
-/- Theorem: Representation is irreducible iff corresponding kG-module is simple-/
+/- The submodule constructed by Representation.ofSubmodule is invariant-/
+theorem ofSubmodule_isIrreducible {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
+  (ρ : Representation k G V) (U : Submodule (MonoidAlgebra k G) ρ.asModule) : IsInvariantSubspace (ofSubmodule ρ U) ρ := by
+  simp [IsInvariantSubspace]
+  intro g u uU'
+  /- This should become its own lemma!!! TODO-/
+  have transReprAlgebra : ((ρ g) u : V) = ρ.asModuleEquiv (((MonoidAlgebra.single) g (1 : k)) • u) := by
+    symm
+    calc
+      ρ.asModuleEquiv (((MonoidAlgebra.single) g (1 : k)) • u) = (ρ.asAlgebraHom ((MonoidAlgebra.single) g (1 : k))) (ρ.asModuleEquiv u) := by rfl
+      _ = (ρ.asAlgebraHom ((MonoidAlgebra.single) g (1 : k))) u := by rfl
+      _ = (ρ g) u := by refine LinearMap.congr_fun ?h u; exact asAlgebraHom_single_one ρ g
+  have theoCoerced : ((ρ g) u : ρ.asModule) ∈ ρ.ofSubmodule U := by
+    rw [transReprAlgebra]
+    have showAsCar : (((MonoidAlgebra.single) g (1 : k)) • u) ∈ U.carrier := by
+      have smulInModule : (((MonoidAlgebra.single) g (1 : k)) • u) ∈ U := by exact Submodule.smul_mem U (MonoidAlgebra.single g 1) uU'
+      assumption
+    assumption
+  assumption
 
-theorem representationIrreducibility_equiv_simpleModule {k G V : Type*} [CommRing k] [Monoid G] [AddCommGroup V] [Module k V] [Nontrivial V] [Finite G]
+/- If a nontrivial module is not simple, it has a submodule that is neither ⊤ nor ⊥-/
+theorem nonSimpleModule_has_nontrivialSubmodule {k V : Type*} [Ring k] [AddCommGroup V] [Module k V] [Nontrivial V]
+   : ¬ IsSimpleModule k V → ∃ U : Submodule k V, U ≠ ⊥ ∧ U ≠ ⊤ := by{
+  intro h
+  by_contra t
+
+  have nct : IsSimpleModule k V := by
+    refine isSimpleOrder_iff_isAtom_top.mpr ?mp.a
+    by_contra ct
+    have defAtom : ¬ (⊤ ≠ (⊥ : Submodule k V) ∧ ∀ W : (Submodule k V), W ≠ ⊥ → W ≤ ⊤ → ⊤ ≤ W) := by
+      by_contra tc
+      have ct' : IsAtom (⊤ : Submodule k V) := by
+        exact isAtom_iff_le_of_ge.mpr tc
+      contradiction
+    push_neg at defAtom
+    have top_neq_bot : ⊤ ≠ (⊥ : Submodule k V) := by
+      refine (Submodule.ne_bot_iff ⊤).mpr ?_
+      have nontrV : ∃ x : V, x ≠ 0 := by exact exists_ne 0
+      obtain ⟨x, hx⟩ := nontrV
+      use x
+      simp
+      exact hx
+    specialize defAtom top_neq_bot
+    obtain ⟨W, hW⟩ := defAtom
+    have t' : ∃ U, U ≠ (⊥ : Submodule k V) ∧ U ≠ (⊤ : Submodule k V) := by
+      use W
+      constructor
+      . exact hW.1
+      . simp at hW
+        exact hW.2
+    contradiction
+
+  contradiction}
+
+/- Theorem: Representation is irreducible iff corresponding kG-module is simple-/
+theorem representationIrreducible_equiv_simpleModule {k G V : Type*} [CommRing k] [Monoid G] [AddCommGroup V] [Module k V] [Nontrivial V] [Finite G]
   (ρ : Representation k G V) : ρ.IsIrreducible ↔ IsSimpleModule (MonoidAlgebra k G) ρ.asModule:= by{
   constructor
   . intro h
-    refine isSimpleOrder_iff_isAtom_top.mpr ?mp.a
+
     /- Proof by contradiction-/
     by_contra ct
 
-    /- There is a proper submodule over kG-/
-    have h' : ∃ U : (Submodule (MonoidAlgebra k G) ρ.asModule), U ≠ ⊥ ∧ U ≠ ⊤ := by {
-      have defAtom : ¬ (⊤ ≠ (⊥ : (Submodule (MonoidAlgebra k G) ρ.asModule)) ∧
-        ∀ W : (Submodule (MonoidAlgebra k G) ρ.asModule), W ≠ ⊥ → W ≤ ⊤ → ⊤ ≤ W) := by{
-          by_contra tc
-          have ct' : IsAtom (⊤ : (Submodule (MonoidAlgebra k G) ρ.asModule)) := by
-            exact isAtom_iff_le_of_ge.mpr tc
-          contradiction
-        }
-      push_neg at defAtom
-      have top_neq_bot : ⊤ ≠ (⊥ : (Submodule (MonoidAlgebra k G) ρ.asModule)) := by
-        refine (Submodule.ne_bot_iff ⊤).mpr ?_
-        have nontrV : ∃ x : V, x ≠ 0 := by exact exists_ne 0
-        have nontrAsModule : ∃ x : ρ.asModule, x ≠ 0 := by
-          obtain ⟨x, hx⟩ := nontrV
-          use x
-        obtain ⟨x, hx⟩ := nontrAsModule
-        use x
-        constructor
-        . exact _root_.trivial
-        . assumption
-      specialize defAtom top_neq_bot
-      obtain ⟨W, hW⟩ := defAtom
-      use W
-      constructor
-      . exact hW.left
-      . obtain ⟨_, ⟨_, hW⟩⟩ := hW
-        simp at hW
-        assumption
-    }
+    have nontrAsModule: Nontrivial ρ.asModule := by assumption
+    have h' : ∃ U : (Submodule (MonoidAlgebra k G) ρ.asModule), U ≠ ⊥ ∧ U ≠ ⊤ := by exact nonSimpleModule_has_nontrivialSubmodule ct
     obtain ⟨U, hU⟩ := h'
 
     have ht : ¬ρ.IsIrreducible := by{
@@ -111,25 +136,7 @@ theorem representationIrreducibility_equiv_simpleModule {k G V : Type*} [CommRin
       have U'Car : U'.carrier = U.carrier := by rfl
       have botCar : (⊥ : Submodule k V).carrier = {0} := by rfl
       constructor
-      . simp [IsInvariantSubspace]
-        intro g u uU'
-        let u' : ρ.asModule := u
-        /- This should become its own lemma!!! TODO-/
-        have transReprAlgebra : (ρ g) u = ρ.asModuleEquiv (((MonoidAlgebra.single) g (1 : k)) • u') := by
-          symm
-          calc
-            ρ.asModuleEquiv (((MonoidAlgebra.single) g (1 : k)) • u') = (ρ.asAlgebraHom ((MonoidAlgebra.single) g (1 : k))) (ρ.asModuleEquiv u') := by rfl
-            _ = (ρ.asAlgebraHom ((MonoidAlgebra.single) g (1 : k))) u := by rfl
-            _ = (ρ g) u := by refine LinearMap.congr_fun ?h u; exact asAlgebraHom_single_one ρ g
-        rw [transReprAlgebra]
-        have showAsCar : (((MonoidAlgebra.single) g (1 : k)) • u') ∈ U'.carrier := by
-          rw [U'Car]
-          have smulInModule : (((MonoidAlgebra.single) g (1 : k)) • u') ∈ U := by{
-            exact Submodule.smul_mem U (MonoidAlgebra.single g 1) uU'
-          }
-          assumption
-        assumption
-
+      . exact ofSubmodule_isIrreducible ρ U
       . constructor
         . by_contra t
           have uBot : U = ⊥ := by
@@ -173,7 +180,6 @@ theorem representationIrreducibility_equiv_simpleModule {k G V : Type*} [CommRin
     unfold Representation.IsIrreducible
     intro U hU
 
-    /-translate to a kG-Module-/
     let U' : Submodule (MonoidAlgebra k G) ρ.asModule := asSubmodule ρ U hU
     have U'trivial : U' = ⊥ ∨ U' = ⊤ := by exact eq_bot_or_eq_top U'
     have UU'Car : U.carrier = U'.carrier := by rfl
