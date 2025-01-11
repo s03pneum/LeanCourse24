@@ -255,6 +255,7 @@ Definitions: Paul
 \begin{definition}
 For representations \(V\) and \(W\), a \textbf{homomorphism} is a linear map \(\theta: V\to W\) with \(\theta(gv) = g\theta(v)\) for \(\forall g\in G, v\in V\).
 \end{definition}
+\pause
 \begin{lstlisting}
 /-- Definition of Homomorhpisms between Representations -/
 @[ext] class RepresentationHom {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
@@ -288,6 +289,7 @@ Coercions: Paul
 \begin{lemma}
 For all \(g \in G\), \(\rho(g)\) is a Representation Endomorphism.
 \end{lemma}
+\pause
 \begin{lstlisting}
 instance repr_yields_reprHom_commMonoid {k G V : Type*} [CommSemiring k] [CommMonoid G] [AddCommMonoid V] [Module k V]
   (ρ : Representation k G V) (g : G) : (RepresentationHom ρ ρ) where
