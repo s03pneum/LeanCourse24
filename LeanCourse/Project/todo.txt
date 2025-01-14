@@ -1,9 +1,3 @@
-remarks by van doorn:
-- find a theorem in mathlib about dimensions of modules (probably does not exist)
-- use structure instead of class (optional)
-
-rename "subspace" etc. to "submodule" etc. whenever it is necessary
-
 - connect two kinds of representations in Mathlib (as a homomorphism, as a module)
 -> "coercion" from homomorphism to module (already given in Mathlib)
 -> "coercion" from module to homomorphism (probably not given in Mathlib, research)

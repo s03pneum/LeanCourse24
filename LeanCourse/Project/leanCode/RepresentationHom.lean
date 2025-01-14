@@ -1,4 +1,4 @@
-import LeanCourse.Project.leanCode.InvariantSubspaces
+import LeanCourse.Project.leanCode.InvariantSubmodules
 import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 import Mathlib.Order.CompletePartialOrder
 
@@ -16,8 +16,8 @@ namespace Representation
   - `zeroRepHom`: The zero map is a repHom.
   - `rep_yields_repHom_commMonoid`: Any element of the monoid acts as a repHom.
 
-- `repHom_image_isInvariantSubspace`: The image of a repHom is an invariant subspace.
-- `repHom_kernel_isInvariantSubspace`: The kernel of a repHom is an invariant subspace.
+- `repHom_image_isInvariantSubmodule`: The image of a repHom is an invariant subspace.
+- `repHom_kernel_isInvariantSubmodule`: The kernel of a repHom is an invariant subspace.
 
 - `repHom_betweenIrreducibles_isZeroOrIso`: RepHoms between irreducible representations are zero or isomorphisms.
 - `endomorphism_irreducibleRep_scalar`:
@@ -69,20 +69,20 @@ instance rep_yields_repHom_commMonoid {k G V : Type*} [CommSemiring k] [CommMono
                     _ = (ρ h) ((ρ g) v)   := by rfl
   }
 
-/- The image of a repHom is an invariant subspace. -/
-theorem repHom_image_isInvariantSubspace {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
+/- The image of a repHom is an invariant submodule. -/
+theorem repHom_image_isInvariantSubmodule {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
   (ρ : Representation k G V) (ψ : Representation k G W) (θ : (RepresentationHom ρ ψ)) :
-  IsInvariantSubspace (LinearMap.range θ.toLinearMap) ψ := by
-  simp [IsInvariantSubspace]
+  IsInvariantSubmodule (LinearMap.range θ.toLinearMap) ψ := by
+  simp [IsInvariantSubmodule]
   intro g v
   use (ρ g) v
   exact θ.reprStructure g v
 
-/- The kernel of a repHom is an invariant subspace. -/
-theorem repHom_kernel_isInvariantSubspace {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
+/- The kernel of a repHom is an invariant submodule. -/
+theorem repHom_kernel_isInvariantSubmodule {k G V W : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [AddCommMonoid W] [Module k W]
   (ρ : Representation k G V) (ψ : Representation k G W) (θ : (RepresentationHom ρ ψ)) :
-  IsInvariantSubspace (LinearMap.ker θ.toLinearMap) ρ := by
-  simp [IsInvariantSubspace]
+  IsInvariantSubmodule (LinearMap.ker θ.toLinearMap) ρ := by
+  simp [IsInvariantSubmodule]
   intro g v vinker
   calc
     θ ((ρ g) v) = ψ g (θ.toLinearMap v) := by exact θ.reprStructure g v
@@ -95,9 +95,9 @@ theorem repHom_betweenIrreducibles_isZeroOrIso {k G V W : Type*} [CommSemiring k
   IsIrreducible ρ → IsIrreducible ψ →  θ = zeroRepHom ρ ψ ∨ Bijective θ := by {
   intro hρ hψ
   have hker : (LinearMap.ker θ.toLinearMap) = ⊥ ∨ (LinearMap.ker θ.toLinearMap) = ⊤ := by
-    exact hρ (LinearMap.ker θ.toLinearMap) (repHom_kernel_isInvariantSubspace ρ ψ θ)
+    exact hρ (LinearMap.ker θ.toLinearMap) (repHom_kernel_isInvariantSubmodule ρ ψ θ)
   have hran : (LinearMap.range θ.toLinearMap) = ⊥ ∨ (LinearMap.range θ.toLinearMap) = ⊤ := by
-    exact hψ (LinearMap.range θ.toLinearMap) (repHom_image_isInvariantSubspace ρ ψ θ)
+    exact hψ (LinearMap.range θ.toLinearMap) (repHom_image_isInvariantSubmodule ρ ψ θ)
 
   by_cases h : θ = zeroRepHom ρ ψ
   . left

@@ -7,7 +7,7 @@ namespace Representation
 
 /-
 # Overview
-- `IsInvariantSubspace` predicate for subspaces of representations
+- `IsInvariantSubsmodule` predicate for subspaces of representations
 - `IsIrreducible` predicate for representations
 - `degree` of a representation
 - `rep_degreeOne_irreducible`: representations of degree 1 are irreducible.
@@ -15,15 +15,15 @@ namespace Representation
 -/
 
 
-/-- A predicate for a subspace being invariant -/
-def IsInvariantSubspace {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
+/-- A predicate for a submodule being invariant -/
+def IsInvariantSubmodule {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
   (U : Submodule k V) (ρ : Representation k G V) :=
   ∀ g : G, ∀ u : U, ρ g u ∈ U
 
 /-- A predicate for a representation being irreducible -/
 def IsIrreducible {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [Nontrivial V]
   (ρ : Representation k G V) :=
-  ∀ U : Submodule k V, IsInvariantSubspace U ρ → U = 0 ∨ U = ⊤
+  ∀ U : Submodule k V, IsInvariantSubmodule U ρ → U = 0 ∨ U = ⊤
 
 /-- Defines degree of a representation as rank of its module. -/
 def degree {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]

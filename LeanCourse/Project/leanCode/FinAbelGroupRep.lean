@@ -64,8 +64,8 @@ theorem rep_of_CommGroup_irreducible_iff_degree_one {k G V : Type*}
       assumption
 
     /-Every subspace of dimension 1 is invariant-/
-    have subspaceDim1Invariant : ∀ U : (Submodule k V), (Module.rank k U) = 1 → IsInvariantSubspace U ρ := by {
-      unfold IsInvariantSubspace
+    have subspaceDim1Invariant : ∀ U : (Submodule k V), (Module.rank k U) = 1 → IsInvariantSubmodule U ρ := by {
+      unfold IsInvariantSubmodule
       intro U dimU g u
       have hs : ∃ s : k, ∀ v : V, (ρ g) v = s • v := by
         exact endomorphism_irreducibleRep_scalar ρ (rep_yields_repHom_commMonoid ρ g) h
@@ -78,7 +78,7 @@ theorem rep_of_CommGroup_irreducible_iff_degree_one {k G V : Type*}
 
     /-This yields the contradiction to V being irreducible-/
     obtain ⟨U, hU⟩ := oneDimSub
-    have hU' : IsInvariantSubspace U ρ := by apply subspaceDim1Invariant; exact
+    have hU' : IsInvariantSubmodule U ρ := by apply subspaceDim1Invariant; exact
       Module.rank_eq_one_iff_finrank_eq_one.mpr hU
     specialize h U hU'
     obtain h|h := h
