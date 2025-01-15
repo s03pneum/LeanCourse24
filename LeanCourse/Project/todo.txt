@@ -1,12 +1,7 @@
-- connect two kinds of representations in Mathlib (as a homomorphism, as a module)
--> "coercion" from homomorphism to module (already given in Mathlib)
--> "coercion" from module to homomorphism (probably not given in Mathlib, research)
--> link the two notions of irreducibility
--> introduce direct sums for homomorphisms, link the two notions of direct sum
--> link the two notions of ReprHoms (module version is probably given)
--> introduce semisimplicity for homomorphisms
--> do what is listed as "Future work" in https://leanprover-community.github.io/mathlib4_docs/Mathlib/RepresentationTheory/Maschke.html
-
-- prepare presentation ;)
+- link the two notions of direct sum
+- link the two notions of ReprHoms (module version is probably given)
+- do what is listed as "Future work" in https://leanprover-community.github.io/mathlib4_docs/Mathlib/RepresentationTheory/Maschke.html
 
 - check Schröer lecture notes for other interesting theorems/definitions
+  -? write completely reducible representations as direct sums of irreducible sub-representations
+  -? define the multiplicity of a irreducible subspace of a completely reducible representation
