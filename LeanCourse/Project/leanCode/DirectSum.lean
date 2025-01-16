@@ -31,11 +31,16 @@ theorem maschkeDraft {k G V: Type*}
   (ρ: Representation k G V): IsCompletelyReducible ρ := by
   intro U invU
   let UMod := asSubmodule ρ U invU
+
+  -- obtain ⟨UMod', h⟩ := exists_isCompl UMod
   have h : ∃ UMod' : Submodule (MonoidAlgebra k G) ρ.asModule, IsCompl UMod UMod' := by
-    -- apply exists_isCompl UMod
     sorry
   obtain ⟨UMod', h⟩ := h
+
   use ofSubmodule ρ UMod'
   constructor
   · exact ofSubmodule_isInvariant ρ UMod'
-  · sorry
+  · have hU : U = ofSubmodule ρ UMod := by rfl
+    rw [hU]
+    apply ofSubmodule_ofComplIsCompl
+    exact h
