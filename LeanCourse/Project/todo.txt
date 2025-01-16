@@ -5,3 +5,5 @@
 - check Schröer lecture notes for other interesting theorems/definitions
   -? write completely reducible representations as direct sums of irreducible sub-representations
   -? define the multiplicity of a irreducible subspace of a completely reducible representation
+  -? decompose the regular representation and find all irreducible representations in it (specify)
+  -? finite groups are abelian if and only if their irreducible representations are of dimension one. -> characterise all representations of finite abelian groups
