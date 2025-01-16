@@ -38,4 +38,7 @@ theorem maschkeDraft {k G V: Type*}
   use ofSubmodule ρ UMod'
   constructor
   · exact ofSubmodule_isInvariant ρ UMod'
-  · sorry
+  · have hU : U = ofSubmodule ρ UMod := by rfl
+    rw [hU]
+    apply ofSubmodule_ofComplIsCompl
+    exact h
