@@ -85,7 +85,7 @@ instance ofSubmodule {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V
     exact Submodule.smul_mem U (MonoidAlgebra.single 1 c) vU
 
 /- The submodule constructed by Representation.ofSubmodule is invariant-/
-theorem ofSubmodule_isIrreducible {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
+theorem ofSubmodule_isInvariant {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
   (ρ : Representation k G V) (U : Submodule (MonoidAlgebra k G) ρ.asModule) : IsInvariantSubmodule (ofSubmodule ρ U) ρ := by
   simp [IsInvariantSubmodule]
   intro g u uU'
@@ -96,6 +96,23 @@ theorem ofSubmodule_isIrreducible {k G V: Type*} [CommSemiring k] [Monoid G] [Ad
       assumption
     assumption
   assumption
+
+theorem ofSubmodule_ofComplIsCompl {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
+  (ρ : Representation k G V) (U U' : Submodule (MonoidAlgebra k G) ρ.asModule) :
+  IsCompl U U' → IsCompl (ofSubmodule ρ U) (ofSubmodule ρ U') := by
+  intro h
+  rw [isCompl_iff] at *
+  obtain ⟨disUU', codisUU'⟩ := h
+  constructor
+  · intro W hW h'W w hw
+
+    have h : ∀ x, x ∈ U → x ∈ U' → x = 0 := by
+      intro x xU xU'
+      sorry
+    exact h w (hW hw) (h'W hw)
+
+  · intro W hW h'W w hw
+    sorry
 
 /- If a nontrivial module is not simple, it has a submodule that is neither ⊤ nor ⊥-/
 lemma nonSimpleModule_has_nontrivialSubmodule {k V : Type*} [Ring k] [AddCommGroup V] [Module k V] [Nontrivial V]
@@ -156,7 +173,7 @@ theorem representationIrreducible_equiv_simpleModule {k G V : Type*} [CommRing k
       have U'Car : U'.carrier = U.carrier := by rfl
       have botCar : (⊥ : Submodule k V).carrier = {0} := by rfl
       constructor
-      . exact ofSubmodule_isIrreducible ρ U
+      . exact ofSubmodule_isInvariant ρ U
       . constructor
         . by_contra t
           have uBot : U = ⊥ := by

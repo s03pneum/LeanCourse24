@@ -37,5 +37,5 @@ theorem maschkeDraft {k G V: Type*}
   obtain ⟨UMod', h⟩ := h
   use ofSubmodule ρ UMod'
   constructor
-  · exact ofSubmodule_isIrreducible ρ UMod'
+  · exact ofSubmodule_isInvariant ρ UMod'
   · sorry
