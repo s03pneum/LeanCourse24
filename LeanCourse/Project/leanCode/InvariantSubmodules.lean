@@ -20,6 +20,11 @@ def IsInvariantSubmodule {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMon
   (U : Submodule k V) (ρ : Representation k G V) :=
   ∀ g : G, ∀ u : U, ρ g u ∈ U
 
+def SubRepresentation {k G V: Type*}
+  [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
+  (ρ : Representation k G V) (U : Submodule k V) :
+  Representation k G U := by exact trivial k
+
 /-- A predicate for a representation being irreducible -/
 def IsIrreducible {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V] [Nontrivial V]
   (ρ : Representation k G V) :=

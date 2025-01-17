@@ -8,6 +8,7 @@ noncomputable section
 
 namespace Representation
 
+
 def directSumRepresentation {k G V₁ V₂: Type*}
   [CommSemiring k] [Monoid G] [AddCommMonoid V₁] [AddCommMonoid V₂] [Module k V₁] [Module k V₂]
   (ρ₁: Representation k G V₁) (ρ₂: Representation k G V₂): Representation k G (V₁ × V₂) := {
@@ -20,10 +21,20 @@ def directSumRepresentation {k G V₁ V₂: Type*}
     map_mul' := by intro g h; simp; rfl
   }
 
+
 def IsCompletelyReducible {k G V: Type*}
   [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
   (ρ : Representation k G V) :=
   ∀ U : Submodule k V, IsInvariantSubmodule U ρ → ∃ U' : Submodule k V, IsInvariantSubmodule U' ρ ∧ (IsCompl U U')
+
+
+lemma subReps_ofComplReducible_isComplReducible {k G V: Type*}
+  [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
+  (ρ : Representation k G V) (U : Submodule k V) :
+  IsCompletelyReducible ρ → IsInvariantSubmodule U ρ → IsCompletelyReducible (SubRepresentation ρ U) := by
+  intro h X hX
+  --obtain ⟨W, hW⟩ := h X
+  sorry
 
 
 theorem maschkeDraft {k G V: Type*}
