@@ -97,21 +97,6 @@ theorem ofSubmodule_isInvariant {k G V: Type*} [CommSemiring k] [Monoid G] [AddC
     assumption
   assumption
 
-theorem ofSubmodule_ofComplIsCompl {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
-  (ρ : Representation k G V) (U U' : Submodule (MonoidAlgebra k G) ρ.asModule) :
-  IsCompl U U' → IsCompl (ofSubmodule ρ U) (ofSubmodule ρ U') := by
-  intro h
-  rw [isCompl_iff] at *
-  obtain ⟨disUU', codisUU'⟩ := h
-  constructor
-  · intro W hWU hWU' w wW
-    have h : ∀ x, x ∈ U → x ∈ U' → x = 0 := by
-      intro x xU xU'
-      sorry
-    exact h w (hWU wW) (hWU' wW)
-  · intro W hW h'W w hw
-    sorry
-
 /- If a nontrivial module is not simple, it has a submodule that is neither ⊤ nor ⊥-/
 lemma nonSimpleModule_has_nontrivialSubmodule {k V : Type*} [Ring k] [AddCommGroup V] [Module k V] [Nontrivial V]
    : ¬ IsSimpleModule k V → ∃ U : Submodule k V, U ≠ ⊥ ∧ U ≠ ⊤ := by{

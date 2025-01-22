@@ -42,6 +42,22 @@ instance complementedLattice {k G V: Type*} [CommSemiring k] [Monoid G] [AddComm
   (ρ : Representation k G V) : ComplementedLattice (Submodule (MonoidAlgebra k G) ρ.asModule) := by sorry
 
 
+theorem ofSubmodule_ofComplIsCompl {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
+  (ρ : Representation k G V) (U U' : Submodule (MonoidAlgebra k G) ρ.asModule) :
+  IsCompl U U' → IsCompl (ofSubmodule ρ U) (ofSubmodule ρ U') := by
+  intro h
+  rw [isCompl_iff] at *
+  obtain ⟨disUU', codisUU'⟩ := h
+  constructor
+  · intro W hWU hWU' w wW
+    have h : ∀ x, x ∈ U → x ∈ U' → x = 0 := by
+      intro x xU xU'
+      sorry
+    exact h w (hWU wW) (hWU' wW)
+  · intro W hW h'W w hw
+    sorry
+
+
 -- maschke's theorem
 theorem rep_ofFinGroup_isCompletelyReducible {k G V: Type*}
   [CommSemiring k] [Group G] [Fintype G] [Invertible (Fintype.card G : k)] [AddCommGroup V] [Module k V]
