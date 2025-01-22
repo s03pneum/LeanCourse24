@@ -37,17 +37,18 @@ lemma subReps_ofComplReducible_isComplReducible {k G V: Type*}
   sorry
 
 
-theorem maschkeDraft {k G V: Type*}
+-- somehow convert from ComplementedLattice (Submodule (MonoidAlgebra k G) V) to ComplementedLattice (Submodule (MonoidAlgebra k G) ρ.asModule)
+instance complementedLattice {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
+  (ρ : Representation k G V) : ComplementedLattice (Submodule (MonoidAlgebra k G) ρ.asModule) := by sorry
+
+
+-- maschke's theorem
+theorem rep_ofFinGroup_isCompletelyReducible {k G V: Type*}
   [CommSemiring k] [Group G] [Fintype G] [Invertible (Fintype.card G : k)] [AddCommGroup V] [Module k V]
   (ρ: Representation k G V): IsCompletelyReducible ρ := by
   intro U invU
-  let UMod := asSubmodule ρ U invU
-
-  -- obtain ⟨UMod', h⟩ := exists_isCompl UMod
-  have h : ∃ UMod' : Submodule (MonoidAlgebra k G) ρ.asModule, IsCompl UMod UMod' := by
-    sorry
-  obtain ⟨UMod', h⟩ := h
-
+  let UMod := (asSubmodule ρ U invU)
+  obtain ⟨UMod', h⟩ := exists_isCompl UMod
   use ofSubmodule ρ UMod'
   constructor
   · exact ofSubmodule_isInvariant ρ UMod'

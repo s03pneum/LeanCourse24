@@ -104,13 +104,11 @@ theorem ofSubmodule_ofComplIsCompl {k G V: Type*} [CommSemiring k] [Monoid G] [A
   rw [isCompl_iff] at *
   obtain ⟨disUU', codisUU'⟩ := h
   constructor
-  · intro W hW h'W w hw
-
+  · intro W hWU hWU' w wW
     have h : ∀ x, x ∈ U → x ∈ U' → x = 0 := by
       intro x xU xU'
       sorry
-    exact h w (hW hw) (h'W hw)
-
+    exact h w (hWU wW) (hWU' wW)
   · intro W hW h'W w hw
     sorry
 
