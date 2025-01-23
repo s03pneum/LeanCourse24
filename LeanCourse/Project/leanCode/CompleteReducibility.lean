@@ -8,7 +8,23 @@ noncomputable section
 
 namespace Representation
 
+/-
+# Goal: Prove Maschke's theorem for representations using the existing algebra version
 
+# Definitions
+- `directSumRepresentation`: the natural representation given for a direct sum of *two* representations.
+- `IsCompletelyReducible` predicate for representations using the `IsCompl` predicate
+
+# todo
+- resolve sorrys
+- implement direct sum representations with any amount of summands
+- write completely reducible representations as direct sums of irreducible sub-representations
+- reformulate maschke that way
+
+-/
+
+
+-- the natural representation given for a direct sum of *two* representations
 def directSumRepresentation {k G V₁ V₂: Type*}
   [CommSemiring k] [Monoid G] [AddCommMonoid V₁] [AddCommMonoid V₂] [Module k V₁] [Module k V₂]
   (ρ₁: Representation k G V₁) (ρ₂: Representation k G V₂): Representation k G (V₁ × V₂) := {
@@ -22,22 +38,17 @@ def directSumRepresentation {k G V₁ V₂: Type*}
   }
 
 
+-- predicate for representations using the `IsCompl` predicate
 def IsCompletelyReducible {k G V: Type*}
   [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
   (ρ : Representation k G V) :=
-  ∀ U : Submodule k V, IsInvariantSubmodule U ρ → ∃ U' : Submodule k V, IsInvariantSubmodule U' ρ ∧ (IsCompl U U')
+  ∀ U : Submodule k V, IsInvariantSubmodule U ρ → ∃ U' : Submodule k V, IsInvariantSubmodule U' ρ ∧ IsCompl U U'
 
 
-lemma subReps_ofComplReducible_isComplReducible {k G V: Type*}
-  [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
-  (ρ : Representation k G V) (U : Submodule k V) :
-  IsCompletelyReducible ρ → IsInvariantSubmodule U ρ → IsCompletelyReducible (SubRepresentation ρ U) := by
-  intro h X hX
-  --obtain ⟨W, hW⟩ := h X
-  sorry
-
-
--- somehow convert from ComplementedLattice (Submodule (MonoidAlgebra k G) V) to ComplementedLattice (Submodule (MonoidAlgebra k G) ρ.asModule)
+-- somehow convert from
+-- ComplementedLattice (Submodule (MonoidAlgebra k G) V) to
+-- ComplementedLattice (Submodule (MonoidAlgebra k G) ρ.asModule)
+-- asModuleEquiv useful?
 instance complementedLattice {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
   (ρ : Representation k G V) : ComplementedLattice (Submodule (MonoidAlgebra k G) ρ.asModule) := by sorry
 
@@ -72,3 +83,12 @@ theorem rep_ofFinGroup_isCompletelyReducible {k G V: Type*}
     rw [hU]
     apply ofSubmodule_ofComplIsCompl
     exact h
+
+
+theorem subReps_ofComplReducible_isComplReducible {k G V: Type*}
+  [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
+  (ρ : Representation k G V) (U : Submodule k V) :
+  IsCompletelyReducible ρ → IsInvariantSubmodule U ρ → IsCompletelyReducible (SubRepresentation ρ U) := by
+  intro h X hX
+  --obtain ⟨W, hW⟩ := h X
+  sorry
