@@ -50,7 +50,8 @@ def IsCompletelyReducible {k G V: Type*}
 -- ComplementedLattice (Submodule (MonoidAlgebra k G) ρ.asModule)
 -- asModuleEquiv useful?
 instance complementedLattice {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
-  (ρ : Representation k G V) : ComplementedLattice (Submodule (MonoidAlgebra k G) ρ.asModule) := by sorry
+  (ρ : Representation k G V) : ComplementedLattice (Submodule (MonoidAlgebra k G) ρ.asModule) where
+  exists_isCompl := sorry
 
 
 theorem ofSubmodule_ofComplIsCompl {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
@@ -63,7 +64,13 @@ theorem ofSubmodule_ofComplIsCompl {k G V: Type*} [CommSemiring k] [Monoid G] [A
   · intro W hWU hWU' w wW
     have h : ∀ x, x ∈ U → x ∈ U' → x = 0 := by
       intro x xU xU'
-      sorry
+      have xInter : x ∈ U.carrier ∩ U'.carrier := by
+        exact mem_inter xU xU'
+      have xBot : x ∈ U ⊓ U' := by exact xInter
+      have UU'bot : U ⊓ U' = ⊥ := by exact disjoint_iff.mp disUU'
+      rw [UU'bot] at xBot
+      simp at xBot
+      assumption
     exact h w (hWU wW) (hWU' wW)
   · intro W hW h'W w hw
     sorry
