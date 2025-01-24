@@ -73,8 +73,17 @@ theorem ofSubmodule_ofComplIsCompl {k G V: Type*} [CommSemiring k] [Monoid G] [A
       assumption
     exact h w (hWU wW) (hWU' wW)
   · intro W hW h'W w hw
-    sorry
-
+    let W' : Submodule (MonoidAlgebra k G) ρ.asModule := ⟨⟨⟨W.carrier, by {sorry}⟩, by {sorry}⟩, by {
+      intro c x xW
+      simp
+      sorry
+    }⟩
+    have hW' : U ≤ W' := by exact hW
+    have hW'' : U' ≤ W' := by exact h'W
+    have UU'W : U ⊔ U' ≤ W' := by exact sup_le hW' hW''
+    have UU'top : U ⊔ U' = ⊤ := by exact codisjoint_iff.mp codisUU'
+    rw [UU'top] at UU'W
+    exact UU'W hw
 
 -- maschke's theorem
 theorem rep_ofFinGroup_isCompletelyReducible {k G V: Type*}
