@@ -8,6 +8,7 @@ namespace Representation
 /-
 # Overview
 - `IsInvariantSubsmodule` predicate for subspaces of representations
+- `SubRepresentation`: the representation for a submodule
 - `IsIrreducible` predicate for representations
 - `degree` of a representation
 - `rep_degreeOne_irreducible`: representations of degree 1 are irreducible.
@@ -20,6 +21,7 @@ def IsInvariantSubmodule {k G V : Type*} [CommSemiring k] [Monoid G] [AddCommMon
   (U : Submodule k V) (ρ : Representation k G V) :=
   ∀ g : G, ∀ u : U, ρ g u ∈ U
 
+/-- this usually only makes sense for invariant submodules -/
 def SubRepresentation {k G V: Type*}
   [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
   (ρ : Representation k G V) (U : Submodule k V) :

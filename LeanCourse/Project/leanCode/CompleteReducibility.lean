@@ -53,8 +53,7 @@ instance complementedLattice {k G V: Type*} [CommSemiring k] [Monoid G] [AddComm
   (ρ : Representation k G V) : ComplementedLattice (Submodule (MonoidAlgebra k G) ρ.asModule) where
   exists_isCompl := sorry
 
-
-theorem ofSubmodule_ofComplIsCompl {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
+theorem ofSubmodule_ofComplIsCompl {k G V: Type*} [CommSemiring k] [Group G] [AddCommMonoid V] [Module k V]
   (ρ : Representation k G V) (U U' : Submodule (MonoidAlgebra k G) ρ.asModule) :
   IsCompl U U' → IsCompl (ofSubmodule ρ U) (ofSubmodule ρ U') := by
   intro h
@@ -64,8 +63,7 @@ theorem ofSubmodule_ofComplIsCompl {k G V: Type*} [CommSemiring k] [Monoid G] [A
   · intro W hWU hWU' w wW
     have h : ∀ x, x ∈ U → x ∈ U' → x = 0 := by
       intro x xU xU'
-      have xInter : x ∈ U.carrier ∩ U'.carrier := by
-        exact mem_inter xU xU'
+      have xInter : x ∈ U.carrier ∩ U'.carrier := by exact mem_inter xU xU'
       have xBot : x ∈ U ⊓ U' := by exact xInter
       have UU'bot : U ⊓ U' = ⊥ := by exact disjoint_iff.mp disUU'
       rw [UU'bot] at xBot
@@ -73,8 +71,15 @@ theorem ofSubmodule_ofComplIsCompl {k G V: Type*} [CommSemiring k] [Monoid G] [A
       assumption
     exact h w (hWU wW) (hWU' wW)
   · intro W hW h'W w hw
-    let W' : Submodule (MonoidAlgebra k G) ρ.asModule := ⟨⟨⟨W.carrier, by {sorry}⟩, by {sorry}⟩, by {
+    let W' : Submodule (MonoidAlgebra k G) ρ.asModule := ⟨⟨⟨W.carrier, by {
+      intro a b aW bW
+      exact W.add_mem' aW bW
+    }⟩, W.zero_mem'⟩, by {
       intro c x xW
+      --have h : IsInvariantSubmodule (ofSubmodule ρ W) ρ := by exact ofSubmodule_isInvariant ρ W
+
+      have h : c • x = ρ.asModuleEquiv (c • x) := by sorry
+      rw [h]
       simp
       sorry
     }⟩
@@ -87,7 +92,8 @@ theorem ofSubmodule_ofComplIsCompl {k G V: Type*} [CommSemiring k] [Monoid G] [A
 
 -- maschke's theorem
 theorem rep_ofFinGroup_isCompletelyReducible {k G V: Type*}
-  [CommSemiring k] [Group G] [Fintype G] [Invertible (Fintype.card G : k)] [AddCommGroup V] [Module k V]
+  [CommSemiring k] [Group G] [Fintype G] [Invertible (Fintype.card G : k)]
+  [AddCommGroup V] [Module k V]
   (ρ: Representation k G V): IsCompletelyReducible ρ := by
   intro U invU
   let UMod := (asSubmodule ρ U invU)
