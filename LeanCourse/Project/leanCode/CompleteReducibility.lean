@@ -2,6 +2,8 @@ import Mathlib
 import LeanCourse.Project.leanCode.InvariantSubmodules
 import LeanCourse.Project.leanCode.IrreducibilityMeansSimpleModule
 
+universe u
+
 open Function Set Classical
 
 noncomputable section
@@ -45,14 +47,6 @@ def IsCompletelyReducible {k G V: Type*}
   ∀ U : Submodule k V, IsInvariantSubmodule U ρ → ∃ U' : Submodule k V, IsInvariantSubmodule U' ρ ∧ IsCompl U U'
 
 
--- somehow convert from
--- ComplementedLattice (Submodule (MonoidAlgebra k G) V) to
--- ComplementedLattice (Submodule (MonoidAlgebra k G) ρ.asModule)
--- asModuleEquiv useful?
-instance complementedLattice {k G V: Type*} [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
-  (ρ : Representation k G V) : ComplementedLattice (Submodule (MonoidAlgebra k G) ρ.asModule) where
-  exists_isCompl := sorry
-
 theorem ofSubmodule_ofComplIsCompl {k G V: Type*} [CommSemiring k] [Group G] [AddCommMonoid V] [Module k V]
   (ρ : Representation k G V) (U U' : Submodule (MonoidAlgebra k G) ρ.asModule) :
   IsCompl U U' → IsCompl (ofSubmodule ρ U) (ofSubmodule ρ U') := by
@@ -90,9 +84,10 @@ theorem ofSubmodule_ofComplIsCompl {k G V: Type*} [CommSemiring k] [Group G] [Ad
     rw [UU'top] at UU'W
     exact UU'W hw
 
+
 -- maschke's theorem
-theorem rep_ofFinGroup_isCompletelyReducible {k G V: Type*}
-  [CommSemiring k] [Group G] [Fintype G] [Invertible (Fintype.card G : k)]
+theorem rep_ofFinGroup_isCompletelyReducible {k G V: Type u}
+  [Field k] [Group G] [Fintype G] [Invertible (Fintype.card G : k)]
   [AddCommGroup V] [Module k V]
   (ρ: Representation k G V): IsCompletelyReducible ρ := by
   intro U invU
@@ -105,12 +100,3 @@ theorem rep_ofFinGroup_isCompletelyReducible {k G V: Type*}
     rw [hU]
     apply ofSubmodule_ofComplIsCompl
     exact h
-
-
-theorem subReps_ofComplReducible_isComplReducible {k G V: Type*}
-  [CommSemiring k] [Monoid G] [AddCommMonoid V] [Module k V]
-  (ρ : Representation k G V) (U : Submodule k V) :
-  IsCompletelyReducible ρ → IsInvariantSubmodule U ρ → IsCompletelyReducible (SubRepresentation ρ U) := by
-  intro h X hX
-  --obtain ⟨W, hW⟩ := h X
-  sorry
