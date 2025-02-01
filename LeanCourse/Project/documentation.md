@@ -8,5 +8,4 @@ Also, we introduced basic definitions for talking about irreducibility in `Invar
 Having finished the main goal, we tried to do the future work stated in `Maschke` in Mathlib. In that file is a proof of Maschke's theorem using algebras.
 Thus, we set out to connect the two notions of representations in the forms of morphisms and of algebras far enough to formulate Maschke's theorem for representations.
 The required transferals of irreducibility notions are done in `IrreducibilityMeansSimpleModule`.
-The new formulation of Maschke's theorem for representations uses complete reducibility and can be found in `CompleteReducibility`,
-where we also introduce further definitions to talk about complete reducibility.
+The new formulation of Maschke's theorem for representations uses complete reducibility and can be found in `CompleteReducibility`.

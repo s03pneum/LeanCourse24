@@ -1,3 +1,0 @@
-- do what is listed as "Future work" in https://leanprover-community.github.io/mathlib4_docs/Mathlib/RepresentationTheory/Maschke.html (-> this should be done by filling out CompleteReducibility)
-- check Schröer lecture notes for other interesting theorems/definitions
-  -? finite groups are abelian if and only if their irreducible representations are of dimension one. -> characterise all representations of finite abelian groups

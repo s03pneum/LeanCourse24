@@ -17,11 +17,9 @@ namespace Representation
 - `directSumRepresentation`: the natural representation given for a direct sum of *two* representations.
 - `IsCompletelyReducible` predicate for representations using the `IsCompl` predicate
 
-# todo
-- resolve sorrys
-- implement direct sum representations with any amount of summands
-- write completely reducible representations as direct sums of irreducible sub-representations
-- reformulate maschke that way
+# Theorems
+- `ofSubmodule_ofComplIsCompl`: complements in the algebra version transfer to complements in the representation version.
+- `rep_ofFinGroup_isCompletelyReducible`: this is maschke's theorem in our formulation with complete reducibility.
 
 -/
 
@@ -47,6 +45,7 @@ def IsCompletelyReducible {k G V: Type*}
   ∀ U : Submodule k V, IsInvariantSubmodule U ρ → ∃ U' : Submodule k V, IsInvariantSubmodule U' ρ ∧ IsCompl U U'
 
 
+-- complements in the algebra version transfer to complements in the representation version.
 theorem ofSubmodule_ofComplIsCompl {k G V: Type*} [CommSemiring k] [Group G] [AddCommMonoid V] [Module k V]
   (ρ : Representation k G V) (U U' : Submodule (MonoidAlgebra k G) ρ.asModule) :
   IsCompl U U' → IsCompl (ofSubmodule ρ U) (ofSubmodule ρ U') := by
@@ -65,18 +64,24 @@ theorem ofSubmodule_ofComplIsCompl {k G V: Type*} [CommSemiring k] [Group G] [Ad
       assumption
     exact h w (hWU wW) (hWU' wW)
   · intro W hW h'W w hw
-    let W' : Submodule (MonoidAlgebra k G) ρ.asModule := ⟨⟨⟨W.carrier, by {
-      intro a b aW bW
-      exact W.add_mem' aW bW
-    }⟩, W.zero_mem'⟩, by {
-      intro c x xW
-      --have h : IsInvariantSubmodule (ofSubmodule ρ W) ρ := by exact ofSubmodule_isInvariant ρ W
-
-      have h : c • x = ρ.asModuleEquiv (c • x) := by sorry
-      rw [h]
-      simp
-      sorry
-    }⟩
+    let W' : Submodule (MonoidAlgebra k G) ρ.asModule := {
+      carrier := W.carrier
+      add_mem' := by
+        intro a b aW bW
+        exact W.add_mem aW bW
+      zero_mem' := by exact W.zero_mem
+      smul_mem' := by
+        intro c x xW
+        have h : c • x = ∑ g in c.support, c g • (ρ g x) := by
+          sorry
+        rw [h]
+        simp at *
+        refine Submodule.sum_smul_mem W _ ?_
+        intro g hg
+        --have invW : IsInvariantSubmodule W ρ := by sorry
+        --have invWDef : ∀ g : G, ∀ w : W, ρ g w ∈ W := by sorry
+        sorry
+    }
     have hW' : U ≤ W' := by exact hW
     have hW'' : U' ≤ W' := by exact h'W
     have UU'W : U ⊔ U' ≤ W' := by exact sup_le hW' hW''
