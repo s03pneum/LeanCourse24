@@ -46,9 +46,10 @@ def IsCompletelyReducible {k G V: Type*}
 
 
 -- complements in the algebra version transfer to complements in the representation version.
+-- this still contains sorrys!
 theorem ofSubmodule_ofComplIsCompl {k G V: Type*} [CommSemiring k] [Group G] [AddCommMonoid V] [Module k V]
   (ρ : Representation k G V) (U U' : Submodule (MonoidAlgebra k G) ρ.asModule) :
-  IsCompl U U' → IsCompl (ofSubmodule ρ U) (ofSubmodule ρ U') := by
+  IsCompl U U' → IsCompl (ρ.ofSubmodule U) (ρ.ofSubmodule U') := by
   intro h
   rw [isCompl_iff] at *
   obtain ⟨disUU', codisUU'⟩ := h
@@ -64,6 +65,7 @@ theorem ofSubmodule_ofComplIsCompl {k G V: Type*} [CommSemiring k] [Group G] [Ad
       assumption
     exact h w (hWU wW) (hWU' wW)
   · intro W hW h'W w hw
+    -- issue: we get (W: Submodule k ρ.asModule), so over k and not over (MonoidAlgebra k G), which should in theory just transfer
     let W' : Submodule (MonoidAlgebra k G) ρ.asModule := {
       carrier := W.carrier
       add_mem' := by
@@ -78,8 +80,6 @@ theorem ofSubmodule_ofComplIsCompl {k G V: Type*} [CommSemiring k] [Group G] [Ad
         simp at *
         refine Submodule.sum_smul_mem W _ ?_
         intro g hg
-        --have invW : IsInvariantSubmodule W ρ := by sorry
-        --have invWDef : ∀ g : G, ∀ w : W, ρ g w ∈ W := by sorry
         sorry
     }
     have hW' : U ≤ W' := by exact hW
