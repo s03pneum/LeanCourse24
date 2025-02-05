@@ -2,9 +2,9 @@
 
 Please fill out the following. Fill in the project topic once you have decided.
 ```
-First & last name: Raphael Gaedtke
+First & last name: Paul Neumann
 Project topic:  representations of abelian groups
-Partner (optional): Paul Neumann
+Partner (optional): Raphael Gaedtke
 ```
 
 ## Your own project
